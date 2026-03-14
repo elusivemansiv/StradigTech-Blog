@@ -9,7 +9,8 @@ builder.Services.AddControllersWithViews();
 
 // Read and convert Railway MySQL URL
 var rawConnection = Environment.GetEnvironmentVariable("DATABASE_URL")
-    ?? builder.Configuration.GetConnectionString("DefaultConnection");
+    ?? builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? "";
 
 // Convert mysql:// URL format to standard connection string if needed
 string connectionString;
@@ -28,7 +29,7 @@ else
 builder.Services.AddDbContext<BlogDbContext>(options =>
     options.UseMySql(
         connectionString,
-        ServerVersion.AutoDetect(connectionString)
+        new MySqlServerVersion(new Version(8, 0, 0))
     ));
 
 // Add Identity
