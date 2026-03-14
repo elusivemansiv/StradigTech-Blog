@@ -6,11 +6,11 @@ ENV ASPNETCORE_URLS=http://+:8080
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY . .
-RUN dotnet restore "StradigBlog.csproj"
-RUN dotnet build "StradigBlog.csproj" -c Release -o /app/build
+RUN dotnet restore "StradigBlog/StradigBlog.csproj"
+RUN dotnet build "StradigBlog/StradigBlog.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "StradigBlog.csproj" -c Release -o /app/publish
+RUN dotnet publish "StradigBlog/StradigBlog.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
