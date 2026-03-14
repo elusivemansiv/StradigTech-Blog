@@ -112,12 +112,9 @@ builder.Services.AddDbContext<BlogDbContext>(options =>
 // -----------------------------
 // Port Configuration for Railway
 // -----------------------------
-var portEnv = Environment.GetEnvironmentVariable("PORT");
-if (!string.IsNullOrEmpty(portEnv))
-{
-    builder.WebHost.UseUrls($"http://*:{portEnv}");
-    Console.WriteLine($"[INFO] App configured to listen on PORT: {portEnv}");
-}
+var portEnv = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://0.0.0.0:{portEnv}");
+Console.WriteLine($"[INFO] App configured to listen on PORT: {portEnv} (0.0.0.0)");
 
 
 // -----------------------------
@@ -173,23 +170,30 @@ app.MapControllerRoute(
 );
 
 // -----------------------------
-// Auto-migrate database on startup
+// Auto-migrate database on startup (Non-blocking)
 // -----------------------------
-using (var scope = app.Services.CreateScope())
+_ = Task.Run(async () => 
 {
-    var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
-    try
+    using (var scope = app.Services.CreateScope())
     {
-        // Small delay to ensure DB service is ready
-        await Task.Delay(2000); 
-        db.Database.Migrate();
-        Console.WriteLine("[INFO] Database migrated successfully.");
+        var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
+        try
+        {
+            Console.WriteLine("[INFO] Background migration starting in 5 seconds...");
+            await Task.Delay(5000); 
+            Console.WriteLine("[INFO] Running database migrations...");
+            db.Database.Migrate();
+            Console.WriteLine("[INFO] Database migrated successfully.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERROR] Failed to migrate database: {ex.Message}");
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine($"[DEBUG] Inner Exception: {ex.InnerException.Message}");
+            }
+        }
     }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"[ERROR] Failed to migrate database: {ex.Message}");
-        throw;
-    }
-}
+});
 
 app.Run();
