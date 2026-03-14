@@ -149,9 +149,16 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+app.UseDeveloperExceptionPage(); // Keep enabled temporarily to debug 500 error on Railway
+
 // -----------------------------
 // Middleware pipeline
 // -----------------------------
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+});
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -179,8 +186,8 @@ _ = Task.Run(async () =>
         var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
         try
         {
-            Console.WriteLine("[INFO] Background migration starting in 5 seconds...");
-            await Task.Delay(5000); 
+            Console.WriteLine("[INFO] Background migration starting in 2 seconds...");
+            await Task.Delay(2000); 
             Console.WriteLine("[INFO] Running database migrations...");
             db.Database.Migrate();
             Console.WriteLine("[INFO] Database migrated successfully.");
