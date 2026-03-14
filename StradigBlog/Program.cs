@@ -12,7 +12,7 @@ builder.Services.AddControllersWithViews();
 // -----------------------------
 Console.WriteLine("[DEBUG] --- Environment Diagnostics ---");
 var allEnvVars = Environment.GetEnvironmentVariables();
-Console.WriteLine("[DEBUG] Available Environment Variable Keys:");
+Console.WriteLine("[DEBUG] Relevant Environment Variables found:");
 foreach (var key in allEnvVars.Keys) {
     string keyStr = key?.ToString() ?? "";
     if (keyStr.Contains("PORT", StringComparison.OrdinalIgnoreCase) || 
@@ -21,12 +21,17 @@ foreach (var key in allEnvVars.Keys) {
         keyStr.Contains("DB", StringComparison.OrdinalIgnoreCase) ||
         keyStr.Contains("URL", StringComparison.OrdinalIgnoreCase))
     {
-        Console.WriteLine($"  -> {keyStr}");
+        var val = allEnvVars[key]?.ToString() ?? "";
+        string displayVal = (keyStr.Contains("PASS", StringComparison.OrdinalIgnoreCase) || keyStr.Contains("URL", StringComparison.OrdinalIgnoreCase)) 
+            ? "***masked***" 
+            : val;
+        Console.WriteLine($"  -> {keyStr} = {displayVal}");
     }
 }
 
 string? rawUrl = Environment.GetEnvironmentVariable("DATABASE_URL") 
-               ?? Environment.GetEnvironmentVariable("MYSQL_URL");
+               ?? Environment.GetEnvironmentVariable("MYSQL_URL")
+               ?? Environment.GetEnvironmentVariable("MYSQL_PRIVATE_URL");
 
 string connectionString = "";
 
@@ -38,13 +43,20 @@ if (!string.IsNullOrWhiteSpace(rawUrl))
         {
             var uri = new Uri(rawUrl);
             var userInfo = uri.UserInfo.Split(':');
-            var user = userInfo.Length > 0 ? userInfo[0] : "";
-            var password = userInfo.Length > 1 ? userInfo[1] : "";
-            var dbName = uri.AbsolutePath.TrimStart('/');
+            
+            // CRITICAL: Unescape user and password as they are often URL-encoded in Railway URLs
+            var user = userInfo.Length > 0 ? Uri.UnescapeDataString(userInfo[0]) : "";
+            var password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : "";
+            
+            // Strip any query parameters or trailing slashes from the database name
+            var dbName = uri.AbsolutePath.TrimStart('/').Split('?')[0].TrimEnd('/');
             var port = uri.Port > 0 ? uri.Port : 3306;
 
-            connectionString = $"Server={uri.Host};Port={port};Database={dbName};User={user};Password={password};AllowPublicKeyRetrieval=true;SslMode=Preferred;";
-            Console.WriteLine($"[INFO] Parsed connection from URL. Target: {uri.Host}:{port}/{dbName}");
+            // Railway internal hosts often work better with SslMode=None if not specifically configured
+            string sslMode = uri.Host.EndsWith(".internal") ? "None" : "Preferred";
+
+            connectionString = $"Server={uri.Host};Port={port};Database={dbName};User={user};Password={password};AllowPublicKeyRetrieval=true;SslMode={sslMode};";
+            Console.WriteLine($"[INFO] Parsed connection from URL. Target: {uri.Host}:{port}/{dbName} (SSL: {sslMode})");
         }
         catch (Exception ex)
         {
@@ -54,7 +66,7 @@ if (!string.IsNullOrWhiteSpace(rawUrl))
     else if (rawUrl.Contains("Server=", StringComparison.OrdinalIgnoreCase))
     {
         connectionString = rawUrl;
-        Console.WriteLine("[INFO] Using literal connection string from DATABASE_URL/MYSQL_URL.");
+        Console.WriteLine("[INFO] Using literal connection string from environment.");
     }
 }
 
@@ -87,8 +99,8 @@ builder.Services.AddDbContext<BlogDbContext>(options =>
         connectionString,
         new MySqlServerVersion(new Version(8, 0, 32)),
         mySqlOptions => mySqlOptions.EnableRetryOnFailure(
-            maxRetryCount: 5,
-            maxRetryDelay: TimeSpan.FromSeconds(10),
+            maxRetryCount: 10,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
             errorNumbersToAdd: null
         )
     )
@@ -168,6 +180,8 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
     try
     {
+        // Small delay to ensure DB service is ready
+        await Task.Delay(2000); 
         db.Database.Migrate();
         Console.WriteLine("[INFO] Database migrated successfully.");
     }
