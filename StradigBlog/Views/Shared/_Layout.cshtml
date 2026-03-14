@@ -1,0 +1,331 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — StradigBlog</title>
+
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <style>
+        :root {
+            --navy: #0d1b2a;
+            --cream: #f5f0e8;
+            --accent: #e8622a;
+            --accent-light: #f4845f;
+            --muted: #6b7280;
+            --border: #e2ddd5;
+            --card-bg: #ffffff;
+            --font-display: 'Inter', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--cream);
+            color: var(--navy);
+            line-height: 1.7;
+        }
+
+        /* ── NAVBAR ── */
+        .site-nav {
+            background: var(--navy);
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+            box-shadow: 0 2px 20px rgba(0,0,0,.3);
+        }
+
+        /* ── LOGO ── */
+        .nav-brand {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: white;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #e8622a, #f4845f);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: white;
+            transform: rotate(-5deg);
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(232,98,42,.4);
+        }
+
+        .nav-brand span {
+            color: #e8622a;
+        }
+
+        /* ── NAV LINKS ── */
+        .nav-links {
+            display: flex;
+            gap: 0.25rem;
+            list-style: none;
+            align-items: center;
+        }
+
+            .nav-links a {
+                color: rgba(245,240,232,.7);
+                text-decoration: none;
+                font-size: 0.875rem;
+                font-weight: 500;
+                padding: 0.5rem 1rem;
+                border-radius: 6px;
+                transition: all 0.2s;
+                letter-spacing: 0.3px;
+            }
+
+                .nav-links a:hover, .nav-links a.active {
+                    color: var(--cream);
+                    background: rgba(255,255,255,.1);
+                }
+
+        .nav-btn {
+            background: var(--accent) !important;
+            color: white !important;
+            border-radius: 6px !important;
+        }
+
+            .nav-btn:hover {
+                background: var(--accent-light) !important;
+            }
+
+        /* ── MAIN CONTENT ── */
+        main {
+            min-height: calc(100vh - 128px);
+        }
+
+        /* ── FOOTER ── */
+        .site-footer {
+            background: var(--navy);
+            color: rgba(245,240,232,.6);
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.85rem;
+        }
+
+            .site-footer a {
+                color: var(--accent);
+                text-decoration: none;
+            }
+
+        /* ── UTILITY ── */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.6rem 1.4rem;
+            border-radius: 6px;
+            font-family: var(--font-body);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+            .btn-primary:hover {
+                background: var(--accent-light);
+                color: white;
+                transform: translateY(-1px);
+            }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--navy);
+            border: 1.5px solid var(--navy);
+        }
+
+            .btn-outline:hover {
+                background: var(--navy);
+                color: var(--cream);
+            }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+            .btn-danger:hover {
+                background: #b91c1c;
+            }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: var(--navy);
+        }
+
+            .btn-secondary:hover {
+                background: #d1d5db;
+            }
+
+        /* ── FORM STYLES ── */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.875rem;
+            margin-bottom: 0.4rem;
+            color: var(--navy);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.65rem 0.9rem;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            background: white;
+            color: var(--navy);
+            transition: border-color 0.2s;
+            outline: none;
+        }
+
+            .form-control:focus {
+                border-color: var(--accent);
+                box-shadow: 0 0 0 3px rgba(232,98,42,.1);
+            }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 180px;
+        }
+
+        /* ── PAGE HEADER ── */
+        .page-header {
+            background: var(--navy);
+            color: var(--cream);
+            padding: 3rem 0;
+            margin-bottom: 2.5rem;
+        }
+
+            .page-header h1 {
+                font-family: var(--font-display);
+                font-size: 2.5rem;
+                font-weight: 700;
+            }
+
+            .page-header p {
+                color: rgba(245,240,232,.6);
+                margin-top: 0.5rem;
+            }
+
+        /* ── ALERTS ── */
+        .alert {
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .alert-danger {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+    </style>
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+
+    <nav class="site-nav">
+        <a class="nav-brand" asp-controller="Home" asp-action="Index">
+            <div class="logo-icon">
+                <i class="fas fa-bolt"></i>
+            </div>
+            Stradig<span>Blog</span>
+        </a>
+        <ul class="nav-links">
+            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li><a asp-controller="Posts" asp-action="Index">All Posts</a></li>
+          
+
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <li>
+                    <a asp-controller="Dashboard" asp-action="Index">
+                        <i class="bi bi-grid-1x2"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn" style="background:rgba(255,255,255,.08); color:rgba(245,240,232,.7); border:1px solid rgba(255,255,255,.15); padding:0.45rem 1rem; font-size:0.875rem;">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </button>
+                    </form>
+                </li>
+            }
+            else
+            {
+                <li><a asp-controller="Account" asp-action="Login">Login</a></li>
+                <li>
+                    <a asp-controller="Account" asp-action="Register" class="nav-btn btn">
+                        <i class="bi bi-person-plus"></i> Register
+                    </a>
+                </li>
+            }
+            
+        </ul>
+    </nav>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; @DateTime.Now.Year <strong>StradigBlog</strong> — Developed By Mansib Ahsan</p>
+    </footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

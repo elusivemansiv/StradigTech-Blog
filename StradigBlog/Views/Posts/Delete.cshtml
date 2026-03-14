@@ -1,0 +1,428 @@
+﻿@model StradigBlog.Models.Post
+@{
+    ViewData["Title"] = "Delete Post";
+}
+
+@section Styles {
+    <style>
+        /* ── DELETE PAGE LAYOUT ── */
+        .delete-page {
+            padding: 3.5rem 0 5rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .delete-wrapper {
+            width: 100%;
+            max-width: 640px;
+            animation: fadeUp 0.45s ease both;
+        }
+
+        @@keyframes fadeUp {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        /* ── WARNING BANNER ── */
+        .warning-banner {
+            background: #fef2f2;
+            border: 1.5px solid #fecaca;
+            border-radius: 14px 14px 0 0;
+            padding: 1.75rem 2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+        }
+
+        .warning-icon-wrap {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: #fee2e2;
+            border: 2px solid #fca5a5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            animation: shake 0.5s ease 0.3s both;
+        }
+
+        @@keyframes shake {
+            0%, 100%
+
+        {
+            transform: rotate(0deg);
+        }
+
+        20% {
+            transform: rotate(-8deg);
+        }
+
+        40% {
+            transform: rotate(8deg);
+        }
+
+        60% {
+            transform: rotate(-5deg);
+        }
+
+        80% {
+            transform: rotate(5deg);
+        }
+
+        }
+
+        .warning-icon-wrap i {
+            font-size: 1.5rem;
+            color: #dc2626;
+        }
+
+        .warning-text h2 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #991b1b;
+            margin-bottom: 0.35rem;
+        }
+
+        .warning-text p {
+            font-size: 0.875rem;
+            color: #b91c1c;
+            line-height: 1.6;
+        }
+
+        /* ── POST PREVIEW CARD ── */
+        .post-preview-card {
+            background: white;
+            border: 1.5px solid #fecaca;
+            border-top: none;
+            padding: 1.75rem 2rem;
+        }
+
+        .preview-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+            .preview-label::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: var(--border);
+            }
+
+        .preview-title {
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .preview-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .preview-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.82rem;
+            color: var(--muted);
+        }
+
+            .preview-meta-item i {
+                color: var(--accent);
+            }
+
+        .category-pill {
+            display: inline-block;
+            background: rgba(232,98,42,.1);
+            color: var(--accent);
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+        }
+
+        .preview-excerpt {
+            font-size: 0.875rem;
+            color: var(--muted);
+            line-height: 1.65;
+            padding: 1rem;
+            background: #fafafa;
+            border-radius: 8px;
+            border-left: 3px solid var(--border);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ── CONSEQUENCES LIST ── */
+        .consequences-card {
+            background: #fffbeb;
+            border: 1.5px solid #fde68a;
+            border-top: none;
+            padding: 1.25rem 2rem;
+        }
+
+        .consequences-title {
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #92400e;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .consequences-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+            .consequences-list li {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-size: 0.82rem;
+                color: #78350f;
+            }
+
+                .consequences-list li i {
+                    color: #d97706;
+                    font-size: 0.85rem;
+                    flex-shrink: 0;
+                }
+
+        /* ── ACTION BUTTONS ── */
+        .delete-actions {
+            background: white;
+            border: 1.5px solid #fecaca;
+            border-top: none;
+            border-radius: 0 0 14px 14px;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-delete-confirm {
+            background: #dc2626;
+            color: white;
+            padding: 0.75rem 2rem;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn-delete-confirm::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: rgba(255,255,255,.15);
+                transition: left 0.3s;
+            }
+
+            .btn-delete-confirm:hover {
+                background: #b91c1c;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 16px rgba(220,38,38,.35);
+            }
+
+                .btn-delete-confirm:hover::before {
+                    left: 100%;
+                }
+
+        .btn-cancel {
+            background: white;
+            color: var(--navy);
+            border: 1.5px solid var(--border);
+            padding: 0.75rem 1.75rem;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+            .btn-cancel:hover {
+                background: var(--cream);
+                border-color: var(--navy);
+                color: var(--navy);
+            }
+
+        /* ── COUNTDOWN BUTTON ── */
+        .confirm-btn-wrap {
+            position: relative;
+        }
+
+        .countdown-ring {
+            position: absolute;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+            width: 22px;
+            height: 22px;
+        }
+
+            .countdown-ring circle {
+                fill: none;
+                stroke: rgba(255,255,255,.5);
+                stroke-width: 2.5;
+                stroke-dasharray: 57;
+                stroke-dashoffset: 57;
+                transform-origin: center;
+                transform: rotate(-90deg);
+                animation: ringFill 3s linear 0.5s forwards;
+            }
+
+        @@keyframes ringFill {
+            to
+
+        {
+            stroke-dashoffset: 0;
+        }
+
+        }
+
+        .safe-message {
+            font-size: 0.78rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+    </style>
+}
+
+<!-- PAGE HEADER -->
+<div class="page-header" style="background: #7f1d1d;">
+    <div class="container">
+        <h1 style="display:flex; align-items:center; gap:.75rem;">
+            <i class="bi bi-trash" style="color:#fca5a5;"></i>
+            Delete Post
+        </h1>
+        <p style="color:rgba(252,165,165,.7);">This action is permanent and cannot be reversed.</p>
+    </div>
+</div>
+
+<div class="delete-page">
+    <div class="delete-wrapper">
+
+        <!-- WARNING BANNER -->
+        <div class="warning-banner">
+            <div class="warning-icon-wrap">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <div class="warning-text">
+                <h2>Are you absolutely sure?</h2>
+                <p>
+                    You are about to permanently delete this post.
+                    Once deleted, it cannot be recovered — all data will be lost forever.
+                </p>
+            </div>
+        </div>
+
+        <!-- POST PREVIEW -->
+        <div class="post-preview-card">
+            <div class="preview-label">
+                <i class="bi bi-file-text"></i> Post to be deleted
+            </div>
+            <h3 class="preview-title">@Model.Title</h3>
+            <div class="preview-meta">
+                @if (Model.Category != null)
+                {
+                    <span class="category-pill">@Model.Category.Name</span>
+                }
+                <span class="preview-meta-item">
+                    <i class="bi bi-calendar3"></i>
+                    @Model.CreatedDate.ToString("MMMM dd, yyyy")
+                </span>
+                <span class="preview-meta-item">
+                    <i class="bi bi-hash"></i> Post #@Model.Id
+                </span>
+            </div>
+            @if (!string.IsNullOrEmpty(Model.Content))
+            {
+                <div class="preview-excerpt">
+                    @(Model.Content.Length > 200 ? Model.Content.Substring(0, 200) + "…" : Model.Content)
+                </div>
+            }
+        </div>
+
+        <!-- CONSEQUENCES -->
+        <div class="consequences-card">
+            <div class="consequences-title">
+                <i class="bi bi-info-circle"></i> What will be deleted
+            </div>
+            <ul class="consequences-list">
+                <li><i class="bi bi-x-circle"></i> The post title, content, and all text</li>
+                <li><i class="bi bi-x-circle"></i> Category association for this post</li>
+                <li><i class="bi bi-x-circle"></i> The post image reference</li>
+                <li><i class="bi bi-x-circle"></i> All metadata including the creation date</li>
+            </ul>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="delete-actions">
+            <div>
+                <a asp-action="Index" class="btn btn-cancel">
+                    <i class="bi bi-arrow-left"></i> Keep Post
+                </a>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:.5rem;">
+                <form asp-action="Delete" method="post" style="margin:0;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+                    <div class="confirm-btn-wrap">
+                        <button type="submit" class="btn btn-delete-confirm">
+                            <i class="bi bi-trash"></i> Yes, Delete Permanently
+                            <svg class="countdown-ring" viewBox="0 0 22 22">
+                                <circle cx="11" cy="11" r="9" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+                <span class="safe-message">
+                    <i class="bi bi-shield-check"></i>
+                    Click "Keep Post" to go back safely
+                </span>
+            </div>
+        </div>
+
+    </div>
+</div>

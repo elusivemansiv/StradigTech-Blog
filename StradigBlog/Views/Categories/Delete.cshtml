@@ -1,0 +1,232 @@
+﻿@model StradigBlog.Models.Category
+@{
+    ViewData["Title"] = "Delete Category";
+}
+
+@section Styles {
+    <style>
+        .delete-page {
+            padding: 3.5rem 0 5rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .delete-wrapper {
+            width: 100%;
+            max-width: 560px;
+            animation: fadeUp 0.45s ease both;
+        }
+
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .warning-banner {
+            background: #fef2f2;
+            border: 1.5px solid #fecaca;
+            border-radius: 14px 14px 0 0;
+            padding: 1.75rem 2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+        }
+
+        .warning-icon-wrap {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: #fee2e2;
+            border: 2px solid #fca5a5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+            .warning-icon-wrap i {
+                font-size: 1.5rem;
+                color: #dc2626;
+            }
+
+        .warning-text h2 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #991b1b;
+            margin-bottom: 0.35rem;
+        }
+
+        .warning-text p {
+            font-size: 0.875rem;
+            color: #b91c1c;
+            line-height: 1.6;
+        }
+
+        .preview-card {
+            background: white;
+            border: 1.5px solid #fecaca;
+            border-top: none;
+            padding: 1.75rem 2rem;
+        }
+
+        .preview-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+            .preview-label::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: var(--border);
+            }
+
+        .preview-cat-name {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 0.75rem;
+        }
+
+        .preview-post-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            padding: 0.3rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .warning-note {
+            background: #fffbeb;
+            border: 1.5px solid #fde68a;
+            border-top: none;
+            padding: 1rem 2rem;
+            font-size: 0.82rem;
+            color: #92400e;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .delete-actions {
+            background: white;
+            border: 1.5px solid #fecaca;
+            border-top: none;
+            border-radius: 0 0 14px 14px;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-cancel {
+            background: white;
+            color: var(--navy);
+            border: 1.5px solid var(--border);
+            padding: 0.75rem 1.75rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+            .btn-cancel:hover {
+                background: var(--cream);
+                border-color: var(--navy);
+                color: var(--navy);
+            }
+
+        .btn-delete-confirm {
+            background: #dc2626;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+            .btn-delete-confirm:hover {
+                background: #b91c1c;
+                box-shadow: 0 4px 16px rgba(220,38,38,.35);
+            }
+    </style>
+}
+
+<div class="page-header" style="background:#7f1d1d;">
+    <div class="container">
+        <h1 style="display:flex; align-items:center; gap:.75rem;">
+            <i class="bi bi-trash" style="color:#fca5a5;"></i> Delete Category
+        </h1>
+        <p style="color:rgba(252,165,165,.7);">This will permanently remove the category.</p>
+    </div>
+</div>
+
+<div class="delete-page">
+    <div class="delete-wrapper">
+
+        <div class="warning-banner">
+            <div class="warning-icon-wrap">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <div class="warning-text">
+                <h2>Delete this category?</h2>
+                <p>This category will be permanently removed. Posts assigned to it will become uncategorized.</p>
+            </div>
+        </div>
+
+        <div class="preview-card">
+            <div class="preview-label"><i class="bi bi-tag"></i> Category to delete</div>
+            <div class="preview-cat-name">@Model.Name</div>
+            <span class="preview-post-count">
+                <i class="bi bi-file-text"></i>
+                @(Model.Posts?.Count ?? 0) @(Model.Posts?.Count == 1 ? "post" : "posts") affected
+            </span>
+        </div>
+
+        @if ((Model.Posts?.Count ?? 0) > 0)
+        {
+            <div class="warning-note">
+                <i class="bi bi-exclamation-triangle" style="flex-shrink:0; margin-top:2px;"></i>
+                <span>
+                    <strong>@Model.Posts!.Count @(Model.Posts.Count == 1 ? "post" : "posts")</strong> currently use this category.
+                    They will not be deleted but will appear as uncategorized.
+                </span>
+            </div>
+        }
+
+        <div class="delete-actions">
+            <a asp-action="Index" class="btn btn-cancel">
+                <i class="bi bi-arrow-left"></i> Keep Category
+            </a>
+            <form asp-action="Delete" method="post" style="margin:0;">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-delete-confirm">
+                    <i class="bi bi-trash"></i> Yes, Delete Category
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>

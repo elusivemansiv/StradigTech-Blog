@@ -1,0 +1,168 @@
+﻿@model StradigBlog.Models.Category
+@{
+    ViewData["Title"] = "New Category";
+}
+
+@section Styles {
+    <style>
+        .form-page {
+            padding: 3rem 0 5rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .form-wrapper {
+            width: 100%;
+            max-width: 560px;
+            animation: fadeUp 0.4s ease both;
+        }
+
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(13,27,42,.08);
+        }
+
+        .form-card-header {
+            background: var(--navy);
+            color: var(--cream);
+            padding: 1.25rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+            .form-card-header i {
+                color: var(--accent-light);
+            }
+
+        .form-card-body {
+            padding: 2rem;
+        }
+
+        .form-card-footer {
+            padding: 1.25rem 2rem;
+            background: #fafaf9;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .field-error {
+            font-size: 0.78rem;
+            color: #dc2626;
+            margin-top: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .name-preview {
+            margin-top: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: #f8f7f5;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .name-preview-badge {
+            display: inline-block;
+            background: rgba(232,98,42,.1);
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+        }
+    </style>
+}
+
+<div class="page-header">
+    <div class="container">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+            <div>
+                <h1><i class="bi bi-tag" style="color:var(--accent-light); margin-right:.5rem;"></i>New Category</h1>
+                <p>Add a new topic to organise your posts.</p>
+            </div>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="form-page">
+    <div class="form-wrapper">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div class="form-card">
+                <div class="form-card-header">
+                    <i class="bi bi-tag"></i> Category Details
+                </div>
+                <div class="form-card-body">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="form-group">
+                        <label class="form-label" asp-for="Name">Category Name</label>
+                        <input asp-for="Name"
+                               class="form-control"
+                               placeholder="e.g. Technology, Travel, Design..."
+                               id="nameInput"
+                               style="font-size:1.05rem;" />
+                        <span asp-validation-for="Name" class="field-error">
+                            
+                        </span>
+
+                        <div class="name-preview">
+                            <span style="color:var(--muted); font-size:0.8rem;">Preview:</span>
+                            <span class="name-preview-badge" id="namePreview">Category Name</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-card-footer">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-x"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-plus"></i> Create Category
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const nameInput = document.getElementById('nameInput');
+        const namePreview = document.getElementById('namePreview');
+        nameInput.addEventListener('input', () => {
+            namePreview.textContent = nameInput.value.trim() || 'Category Name';
+        });
+    </script>
+}

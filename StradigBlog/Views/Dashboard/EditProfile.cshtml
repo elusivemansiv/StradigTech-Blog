@@ -1,0 +1,220 @@
+﻿@model StradigBlog.Models.ViewModels.EditProfileViewModel
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+@section Styles {
+    <style>
+        .profile-page {
+            padding: 3rem 0 5rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .profile-wrapper {
+            width: 100%;
+            max-width: 620px;
+            animation: fadeUp 0.4s ease both;
+        }
+
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(13,27,42,.08);
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-card-header {
+            background: var(--navy);
+            color: var(--cream);
+            padding: 1.25rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+            .profile-card-header i {
+                color: var(--accent-light);
+            }
+
+        .profile-card-body {
+            padding: 2rem;
+        }
+
+        .profile-card-footer {
+            padding: 1.25rem 2rem;
+            background: #fafaf9;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.75rem 0 1.25rem;
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+            .section-divider::before,
+            .section-divider::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: var(--border);
+            }
+
+        .field-error {
+            font-size: 0.78rem;
+            color: #dc2626;
+            margin-top: 0.3rem;
+        }
+
+        .auth-error {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 0.85rem 1rem;
+            font-size: 0.875rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .password-hint {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 0.35rem;
+        }
+    </style>
+}
+
+<div class="page-header">
+    <div class="container">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+            <div>
+                <h1>
+                    <i class="bi bi-person-gear" style="color:var(--accent-light); margin-right:.5rem;"></i>
+                    Edit Profile
+                </h1>
+                <p>Update your account information and password.</p>
+            </div>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="profile-page">
+    <div class="profile-wrapper">
+        <form asp-action="EditProfile" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="profile-card">
+                <div class="profile-card-header">
+                    <i class="bi bi-person-circle"></i> Account Information
+                </div>
+                <div class="profile-card-body">
+
+                    <div asp-validation-summary="ModelOnly" class="auth-error">
+                        <i class="bi bi-exclamation-triangle" style="flex-shrink:0;"></i>
+                        <span></span>
+                    </div>
+
+                    <!-- USERNAME -->
+                    <div class="form-group">
+                        <label class="form-label" asp-for="UserName">
+                            <i class="bi bi-person" style="color:var(--accent);"></i> Username
+                        </label>
+                        <input asp-for="UserName" class="form-control" placeholder="Your username" />
+                        <span asp-validation-for="UserName" class="field-error"></span>
+                    </div>
+
+                    <!-- EMAIL -->
+                    <div class="form-group">
+                        <label class="form-label" asp-for="Email">
+                            <i class="bi bi-envelope" style="color:var(--accent);"></i> Email Address
+                        </label>
+                        <input asp-for="Email" class="form-control" type="email" placeholder="you@example.com" />
+                        <span asp-validation-for="Email" class="field-error"></span>
+                    </div>
+
+                    <div class="section-divider">Change Password</div>
+
+                    <!-- CURRENT PASSWORD -->
+                    <div class="form-group">
+                        <label class="form-label" asp-for="CurrentPassword">
+                            <i class="bi bi-lock" style="color:var(--accent);"></i> Current Password
+                        </label>
+                        <input asp-for="CurrentPassword"
+                               class="form-control"
+                               type="password"
+                               placeholder="Enter current password" />
+                        <p class="password-hint">Required only if you want to change your password.</p>
+                        <span asp-validation-for="CurrentPassword" class="field-error"></span>
+                    </div>
+
+                    <!-- NEW PASSWORD -->
+                    <div class="form-group">
+                        <label class="form-label" asp-for="NewPassword">
+                            <i class="bi bi-lock-fill" style="color:var(--accent);"></i> New Password
+                        </label>
+                        <input asp-for="NewPassword"
+                               class="form-control"
+                               type="password"
+                               placeholder="Min. 6 characters" />
+                        <span asp-validation-for="NewPassword" class="field-error"></span>
+                    </div>
+
+                    <!-- CONFIRM PASSWORD -->
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" asp-for="ConfirmNewPassword">
+                            <i class="bi bi-lock-fill" style="color:var(--accent);"></i> Confirm New Password
+                        </label>
+                        <input asp-for="ConfirmNewPassword"
+                               class="form-control"
+                               type="password"
+                               placeholder="Repeat new password" />
+                        <span asp-validation-for="ConfirmNewPassword" class="field-error"></span>
+                    </div>
+
+                </div>
+                <div class="profile-card-footer">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-x"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg"></i> Save Changes
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>

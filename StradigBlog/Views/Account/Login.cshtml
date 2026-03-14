@@ -1,0 +1,346 @@
+﻿@model StradigBlog.Models.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <style>
+        .auth-page {
+            min-height: calc(100vh - 128px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1.5rem;
+            background: var(--cream);
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 460px;
+            animation: fadeUp 0.45s ease both;
+        }
+
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── AUTH CARD ── */
+        .auth-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 8px 40px rgba(13,27,42,.1);
+        }
+
+        .auth-card-top {
+            background: var(--navy);
+            padding: 2.5rem 2rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .auth-card-top::before {
+                content: '';
+                position: absolute;
+                top: -60px;
+                right: -60px;
+                width: 200px;
+                height: 200px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(232,98,42,.2) 0%, transparent 70%);
+                pointer-events: none;
+            }
+
+        .auth-logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #e8622a, #f4845f);
+            border-radius: 14px;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 1rem;
+            transform: rotate(-5deg);
+            box-shadow: 0 4px 16px rgba(232,98,42,.4);
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-card-top h1 {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--cream);
+            margin-bottom: 0.35rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-card-top p {
+            color: rgba(245,240,232,.55);
+            font-size: 0.875rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── FORM BODY ── */
+        .auth-card-body {
+            padding: 2rem;
+        }
+
+        .auth-field {
+            margin-bottom: 1.25rem;
+        }
+
+        .auth-label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--navy);
+            margin-bottom: 0.4rem;
+        }
+
+            .auth-label i {
+                color: var(--accent);
+                font-size: 0.9rem;
+            }
+
+        .auth-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            background: white;
+            color: var(--navy);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+            .auth-input:focus {
+                border-color: var(--accent);
+                box-shadow: 0 0 0 3px rgba(232,98,42,.1);
+            }
+
+        /* ── REMEMBER ME ── */
+        .remember-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+            .remember-row input[type="checkbox"] {
+                width: 16px;
+                height: 16px;
+                accent-color: var(--accent);
+                cursor: pointer;
+            }
+
+            .remember-row label {
+                font-size: 0.875rem;
+                color: var(--muted);
+                cursor: pointer;
+            }
+
+        /* ── SUBMIT BTN ── */
+        .auth-submit {
+            width: 100%;
+            padding: 0.85rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+            .auth-submit:hover {
+                background: var(--accent-light);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 16px rgba(232,98,42,.35);
+            }
+
+        /* ── FOOTER ── */
+        .auth-card-footer {
+            padding: 1.25rem 2rem;
+            background: #fafaf9;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--muted);
+        }
+
+            .auth-card-footer a {
+                color: var(--accent);
+                font-weight: 500;
+                text-decoration: none;
+            }
+
+                .auth-card-footer a:hover {
+                    text-decoration: underline;
+                }
+
+        /* ── ERROR ── */
+        .auth-error {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 0.85rem 1rem;
+            font-size: 0.875rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .field-error {
+            font-size: 0.78rem;
+            color: #dc2626;
+            margin-top: 0.3rem;
+        }
+
+        /* ── DIVIDER ── */
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+            .auth-divider::before,
+            .auth-divider::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: var(--border);
+            }
+    </style>
+}
+
+<div class="auth-page">
+    <div class="auth-wrapper">
+        <div class="auth-card">
+
+            <!-- TOP -->
+            <div class="auth-card-top">
+                <div class="auth-logo">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h1>Welcome back</h1>
+                <p>Sign in to your StradigBlog account</p>
+            </div>
+
+            <!-- BODY -->
+            <div class="auth-card-body">
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div asp-validation-summary="All" class="auth-error">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <span>Please check your details and try again.</span>
+                    </div>
+                }
+
+                <form asp-action="Login" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+
+                    <!-- EMAIL -->
+                    <div class="auth-field">
+                        <label class="auth-label" asp-for="Email">
+                            <i class="bi bi-envelope"></i> Email address
+                        </label>
+                        <input asp-for="Email"
+                               class="auth-input"
+                               type="email"
+                               placeholder="you@example.com"
+                               autocomplete="email" />
+                        <span asp-validation-for="Email" class="field-error"></span>
+                    </div>
+
+                    <!-- PASSWORD -->
+                    <div class="auth-field">
+                        <label class="auth-label" asp-for="Password">
+                            <i class="bi bi-lock"></i> Password
+                        </label>
+                        <div style="position:relative;">
+                            <input asp-for="Password"
+                                   class="auth-input"
+                                   type="password"
+                                   placeholder="Enter your password"
+                                   id="passwordInput"
+                                   autocomplete="current-password"
+                                   style="padding-right:3rem;" />
+                            <button type="button"
+                                    onclick="togglePassword()"
+                                    style="position:absolute; right:0.75rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--muted); font-size:1rem;">
+                                <i class="bi bi-eye" id="eyeIcon"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Password" class="field-error"></span>
+                    </div>
+
+                    <!-- REMEMBER ME -->
+                    <div class="remember-row">
+                        <input asp-for="RememberMe" type="checkbox" id="rememberMe" />
+                        <label for="rememberMe">Remember me for 7 days</label>
+                    </div>
+
+                    <!-- SUBMIT -->
+                    <button type="submit" class="auth-submit">
+                        <i class="bi bi-box-arrow-in-right"></i> Sign In
+                    </button>
+                </form>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="auth-card-footer">
+                Don't have an account?
+                <a asp-controller="Account" asp-action="Register">Create one here</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function togglePassword() {
+            const input = document.getElementById('passwordInput');
+            const icon = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'bi bi-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'bi bi-eye';
+            }
+        }
+    </script>
+}

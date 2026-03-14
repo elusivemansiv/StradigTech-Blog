@@ -1,0 +1,602 @@
+﻿@model StradigBlog.Models.Post
+@{
+    ViewData["Title"] = "Create Post";
+}
+
+@section Styles {
+    <style>
+        .editor-layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            padding: 2.5rem 0 4rem;
+            align-items: start;
+        }
+
+        @@media (max-width: 900px) {
+            .editor-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ── EDITOR CARD ── */
+        .editor-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 2px 20px rgba(13,27,42,.06);
+            animation: fadeUp 0.45s ease both;
+        }
+
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .editor-card-header {
+            background: var(--navy);
+            color: var(--cream);
+            padding: 1.1rem 1.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+        }
+
+            .editor-card-header i {
+                color: var(--accent-light);
+                font-size: 1rem;
+            }
+
+        .editor-card-body {
+            padding: 2rem 1.75rem;
+        }
+
+        /* ── CHAR COUNTER ── */
+        .field-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.4rem;
+        }
+
+        .char-count {
+            font-size: 0.75rem;
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+            .char-count.warn {
+                color: #d97706;
+            }
+
+            .char-count.over {
+                color: #dc2626;
+            }
+
+        /* ── TITLE INPUT STYLE ── */
+        .title-input {
+            font-family: var(--font-display) !important;
+            font-size: 1.35rem !important;
+            font-weight: 700 !important;
+            letter-spacing: -0.3px;
+        }
+
+        /* ── CONTENT TEXTAREA ── */
+        .content-textarea {
+            min-height: 320px;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        /* ── FORM DIVIDER ── */
+        .form-divider {
+            border: none;
+            border-top: 1px dashed var(--border);
+            margin: 1.75rem 0;
+        }
+
+        /* ── EDITOR FOOTER ── */
+        .editor-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        /* ── SIDEBAR CARDS ── */
+        .sidebar-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 12px rgba(13,27,42,.05);
+            animation: fadeUp 0.45s ease 0.1s both;
+        }
+
+        .sidebar-card-header {
+            background: var(--navy);
+            color: var(--cream);
+            padding: 0.85rem 1.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .sidebar-card-header i {
+                color: var(--accent-light);
+            }
+
+        .sidebar-card-body {
+            padding: 1.25rem;
+        }
+
+        /* ── TIPS ── */
+        .tip-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            padding: 0.5rem 0;
+            font-size: 0.82rem;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border);
+            line-height: 1.5;
+        }
+
+            .tip-item:last-child {
+                border-bottom: none;
+                padding-bottom: 0;
+            }
+
+            .tip-item i {
+                color: var(--accent);
+                margin-top: 2px;
+                flex-shrink: 0;
+            }
+
+        /* ── IMAGE PREVIEW ── */
+        .image-preview {
+            width: 100%;
+            height: 140px;
+            border-radius: 8px;
+            background: #f3f4f6;
+            border: 2px dashed var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.82rem;
+            color: var(--muted);
+            margin-top: 0.75rem;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+            .image-preview img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 6px;
+            }
+
+            .image-preview.has-image {
+                border-style: solid;
+                border-color: var(--accent);
+            }
+
+        /* ── STATUS INDICATOR ── */
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            margin-right: 0.4rem;
+            animation: pulse 2s infinite;
+        }
+
+        @@keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        /* ── VALIDATION ── */
+        .field-error {
+            font-size: 0.78rem;
+            color: #dc2626;
+            margin-top: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* ── UPLOAD TABS ── */
+        .upload-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .upload-tab {
+            flex: 1;
+            padding: 0.45rem 0.75rem;
+            border-radius: 6px;
+            border: 1.5px solid var(--border);
+            background: white;
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            font-family: var(--font-body);
+        }
+
+            .upload-tab.active {
+                background: var(--navy);
+                color: var(--cream);
+                border-color: var(--navy);
+            }
+
+        /* ── DROP ZONE ── */
+        .file-drop-zone {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fafaf9;
+        }
+
+            .file-drop-zone:hover,
+            .file-drop-zone.dragover {
+                border-color: var(--accent);
+                background: rgba(232,98,42,.04);
+            }
+
+            .file-drop-zone i {
+                font-size: 1.75rem;
+                color: var(--muted);
+                display: block;
+                margin-bottom: 0.5rem;
+            }
+
+            .file-drop-zone p {
+                font-size: 0.82rem;
+                color: var(--navy);
+                font-weight: 500;
+                margin-bottom: 0.2rem;
+            }
+
+            .file-drop-zone span {
+                font-size: 0.75rem;
+                color: var(--muted);
+            }
+
+        .file-name-display {
+            margin-top: 0.5rem;
+            font-size: 0.78rem;
+            color: var(--accent);
+            font-weight: 500;
+            text-align: center;
+            display: none;
+        }
+    </style>
+}
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <div class="container">
+        <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap; justify-content:space-between;">
+            <div>
+                <h1>
+                    <i class="bi bi-pencil-square" style="color:var(--accent-light); margin-right:.5rem;"></i>
+                    Create New Post
+                </h1>
+                <p>Write and publish a new article to your blog.</p>
+            </div>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Posts
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+        <div class="editor-layout">
+
+            <!-- MAIN EDITOR -->
+            <div>
+                <div class="editor-card">
+                    <div class="editor-card-header">
+                        <i class="bi bi-file-text"></i>
+                        Post Content
+                        <span style="margin-left:auto; font-size:0.75rem; opacity:.6;">
+                            <span class="status-dot"></span>Draft
+                        </span>
+                    </div>
+                    <div class="editor-card-body">
+
+                        <!-- TITLE -->
+                        <div class="form-group">
+                            <div class="field-header">
+                                <label class="form-label" asp-for="Title">Post Title</label>
+                                <span class="char-count" id="titleCount">0 / 120</span>
+                            </div>
+                            <input asp-for="Title"
+                                   class="form-control title-input"
+                                   placeholder="Enter a compelling title..."
+                                   maxlength="120"
+                                   id="titleInput" />
+                            <span asp-validation-for="Title" class="field-error"></span>
+                        </div>
+
+                        <hr class="form-divider" />
+
+                        <!-- CONTENT -->
+                        <div class="form-group">
+                            <div class="field-header">
+                                <label class="form-label" asp-for="Content">Content</label>
+                                <span class="char-count" id="contentCount">0 words</span>
+                            </div>
+                            <textarea asp-for="Content"
+                                      class="form-control content-textarea"
+                                      placeholder="Write your article here. Each new line will become a paragraph..."
+                                      id="contentInput"></textarea>
+                            <span asp-validation-for="Content" class="field-error"></span>
+                        </div>
+
+                        <div class="editor-footer">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-x"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send"></i> Publish Post
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIDEBAR -->
+            <aside>
+
+                <!-- Publish Settings -->
+                <div class="sidebar-card">
+                    <div class="sidebar-card-header">
+                        <i class="bi bi-gear"></i> Settings
+                    </div>
+                    <div class="sidebar-card-body">
+
+                        <!-- CATEGORY -->
+                        <div class="form-group">
+                            <label class="form-label" asp-for="CategoryId">
+                                <i class="bi bi-tag" style="color:var(--accent);"></i> Category
+                            </label>
+                            <select asp-for="CategoryId"
+                                    asp-items="ViewBag.CategoryId"
+                                    class="form-control">
+                                <option value="">— Select a category —</option>
+                            </select>
+                            <span asp-validation-for="CategoryId" class="field-error"></span>
+                        </div>
+
+                        <!-- IMAGE UPLOAD -->
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="form-label">
+                                <i class="bi bi-image" style="color:var(--accent);"></i> Post Image
+                                <span style="color:var(--muted); font-weight:400;">(optional)</span>
+                            </label>
+
+                            <!-- TAB TOGGLE -->
+                            <div class="upload-tabs">
+                                <button type="button" class="upload-tab active" onclick="switchTab('upload')">
+                                    <i class="bi bi-upload"></i> Upload File
+                                </button>
+                                <button type="button" class="upload-tab" onclick="switchTab('url')">
+                                    <i class="bi bi-link-45deg"></i> Image URL
+                                </button>
+                            </div>
+
+                            <!-- FILE UPLOAD TAB -->
+                            <div id="uploadTab">
+                                <div class="file-drop-zone"
+                                     id="dropZone"
+                                     onclick="document.getElementById('imageFile').click()">
+                                    <i class="bi bi-cloud-upload"></i>
+                                    <p>Click to upload or drag & drop</p>
+                                    <span>JPG, PNG, GIF, WEBP — max 5MB</span>
+                                </div>
+                                <div class="file-name-display" id="fileNameDisplay"></div>
+                                <input type="file"
+                                       name="imageFile"
+                                       id="imageFile"
+                                       accept=".jpg,.jpeg,.png,.gif,.webp"
+                                       style="display:none;" />
+                            </div>
+
+                            <!-- URL TAB -->
+                            <div id="urlTab" style="display:none;">
+                                <input asp-for="ImagePath"
+                                       class="form-control"
+                                       placeholder="https://example.com/image.jpg"
+                                       id="imageInput" />
+                            </div>
+
+                            <!-- PREVIEW -->
+                            <div class="image-preview" id="imagePreview">
+                                <span>
+                                    <i class="bi bi-image" style="margin-right:.4rem;"></i>
+                                    Preview will appear here
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Writing Tips -->
+                <div class="sidebar-card">
+                    <div class="sidebar-card-header">
+                        <i class="bi bi-lightbulb"></i> Writing Tips
+                    </div>
+                    <div class="sidebar-card-body">
+                        <div class="tip-item">
+                            <i class="bi bi-check-circle"></i>
+                            Keep titles under 70 characters for best SEO results.
+                        </div>
+                        <div class="tip-item">
+                            <i class="bi bi-check-circle"></i>
+                            Start with a strong opening sentence to hook readers.
+                        </div>
+                        <div class="tip-item">
+                            <i class="bi bi-check-circle"></i>
+                            Each new line in content becomes its own paragraph.
+                        </div>
+                        <div class="tip-item">
+                            <i class="bi bi-check-circle"></i>
+                            Add an image URL to make your post stand out.
+                        </div>
+                    </div>
+                </div>
+
+            </aside>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        // ── TITLE COUNTER ──
+        const titleInput = document.getElementById('titleInput');
+        const titleCount = document.getElementById('titleCount');
+        titleInput.addEventListener('input', () => {
+            const len = titleInput.value.length;
+            titleCount.textContent = `${len} / 120`;
+            titleCount.className = 'char-count' + (len > 100 ? ' warn' : '') + (len >= 120 ? ' over' : '');
+        });
+
+        // ── CONTENT WORD COUNTER ──
+        const contentInput = document.getElementById('contentInput');
+        const contentCount = document.getElementById('contentCount');
+        contentInput.addEventListener('input', () => {
+            const words = contentInput.value.trim().split(/\s+/).filter(w => w.length > 0).length;
+            contentCount.textContent = `${words} word${words !== 1 ? 's' : ''}`;
+        });
+
+        // ── TAB SWITCHING ──
+        const imagePreview = document.getElementById('imagePreview');
+
+        function switchTab(tab) {
+            const uploadTab = document.getElementById('uploadTab');
+            const urlTab = document.getElementById('urlTab');
+            const tabs = document.querySelectorAll('.upload-tab');
+
+            if (tab === 'upload') {
+                uploadTab.style.display = 'block';
+                urlTab.style.display = 'none';
+                tabs[0].classList.add('active');
+                tabs[1].classList.remove('active');
+            } else {
+                uploadTab.style.display = 'none';
+                urlTab.style.display = 'block';
+                tabs[0].classList.remove('active');
+                tabs[1].classList.add('active');
+            }
+
+            imagePreview.innerHTML = '<span><i class="bi bi-image" style="margin-right:.4rem;"></i> Preview will appear here</span>';
+            imagePreview.classList.remove('has-image');
+        }
+
+        // ── FILE UPLOAD PREVIEW ──
+        const imageFile = document.getElementById('imageFile');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+
+        imageFile.addEventListener('change', () => {
+            const file = imageFile.files[0];
+            if (file) {
+                fileNameDisplay.textContent = '📎 ' + file.name;
+                fileNameDisplay.style.display = 'block';
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview" />`;
+                    imagePreview.classList.add('has-image');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // ── DRAG AND DROP ──
+        const dropZone = document.getElementById('dropZone');
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                imageFile.files = e.dataTransfer.files;
+                fileNameDisplay.textContent = '📎 ' + file.name;
+                fileNameDisplay.style.display = 'block';
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    imagePreview.innerHTML = `<img src="${ev.target.result}" alt="Preview" />`;
+                    imagePreview.classList.add('has-image');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // ── URL PREVIEW ──
+        const imageInput = document.getElementById('imageInput');
+        if (imageInput) {
+            imageInput.addEventListener('input', () => {
+                const url = imageInput.value.trim();
+                if (url) {
+                    imagePreview.innerHTML = `<img src="${url}" alt="Preview" onerror="this.parentElement.innerHTML='<span style=color:#dc2626>Invalid image URL</span>'" />`;
+                    imagePreview.classList.add('has-image');
+                } else {
+                    imagePreview.innerHTML = '<span><i class="bi bi-image" style="margin-right:.4rem;"></i> Preview will appear here</span>';
+                    imagePreview.classList.remove('has-image');
+                }
+            });
+        }
+    </script>
+}

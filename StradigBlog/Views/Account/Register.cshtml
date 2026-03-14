@@ -1,0 +1,436 @@
+﻿@model StradigBlog.Models.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <style>
+        .auth-page {
+            min-height: calc(100vh - 128px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1.5rem;
+            background: var(--cream);
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 480px;
+            animation: fadeUp 0.45s ease both;
+        }
+
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 8px 40px rgba(13,27,42,.1);
+        }
+
+        .auth-card-top {
+            background: var(--navy);
+            padding: 2.5rem 2rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .auth-card-top::before {
+                content: '';
+                position: absolute;
+                top: -60px;
+                right: -60px;
+                width: 200px;
+                height: 200px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(232,98,42,.2) 0%, transparent 70%);
+                pointer-events: none;
+            }
+
+        .auth-logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #e8622a, #f4845f);
+            border-radius: 14px;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 1rem;
+            transform: rotate(-5deg);
+            box-shadow: 0 4px 16px rgba(232,98,42,.4);
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-card-top h1 {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--cream);
+            margin-bottom: 0.35rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-card-top p {
+            color: rgba(245,240,232,.55);
+            font-size: 0.875rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-card-body {
+            padding: 2rem;
+        }
+
+        .auth-field {
+            margin-bottom: 1.25rem;
+        }
+
+        .auth-label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--navy);
+            margin-bottom: 0.4rem;
+        }
+
+            .auth-label i {
+                color: var(--accent);
+                font-size: 0.9rem;
+            }
+
+        .auth-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            background: white;
+            color: var(--navy);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+            .auth-input:focus {
+                border-color: var(--accent);
+                box-shadow: 0 0 0 3px rgba(232,98,42,.1);
+            }
+
+        /* ── PASSWORD STRENGTH ── */
+        .strength-bar {
+            height: 4px;
+            background: var(--border);
+            border-radius: 999px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            border-radius: 999px;
+            transition: width 0.3s, background 0.3s;
+            width: 0%;
+        }
+
+        .strength-label {
+            font-size: 0.75rem;
+            margin-top: 0.3rem;
+            color: var(--muted);
+        }
+
+        /* ── SUBMIT ── */
+        .auth-submit {
+            width: 100%;
+            padding: 0.85rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+            .auth-submit:hover {
+                background: var(--accent-light);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 16px rgba(232,98,42,.35);
+            }
+
+        .auth-card-footer {
+            padding: 1.25rem 2rem;
+            background: #fafaf9;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--muted);
+        }
+
+            .auth-card-footer a {
+                color: var(--accent);
+                font-weight: 500;
+                text-decoration: none;
+            }
+
+                .auth-card-footer a:hover {
+                    text-decoration: underline;
+                }
+
+        .auth-error {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 0.85rem 1rem;
+            font-size: 0.875rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .field-error {
+            font-size: 0.78rem;
+            color: #dc2626;
+            margin-top: 0.3rem;
+        }
+
+        /* ── REQUIREMENTS ── */
+        .requirements {
+            background: #f8f7f5;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.85rem 1rem;
+            margin-top: 0.75rem;
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+
+        .req-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.2rem 0;
+        }
+
+            .req-item i {
+                font-size: 0.75rem;
+                color: var(--border);
+            }
+
+            .req-item.met i {
+                color: #22c55e;
+            }
+
+            .req-item.met {
+                color: var(--navy);
+            }
+    </style>
+}
+
+<div class="auth-page">
+    <div class="auth-wrapper">
+        <div class="auth-card">
+
+            <!-- TOP -->
+            <div class="auth-card-top">
+                <div class="auth-logo">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h1>Create account</h1>
+                <p>Join StradigBlog and start writing</p>
+            </div>
+
+            <!-- BODY -->
+            <div class="auth-card-body">
+
+                <div asp-validation-summary="ModelOnly" class="auth-error">
+                    <i class="bi bi-exclamation-triangle" style="flex-shrink:0; margin-top:2px;"></i>
+                    <span></span>
+                </div>
+
+                <form asp-action="Register" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <!-- EMAIL -->
+                    <div class="auth-field">
+                        <label class="auth-label" asp-for="Email">
+                            <i class="bi bi-envelope"></i> Email address
+                        </label>
+                        <input asp-for="Email"
+                               class="auth-input"
+                               type="email"
+                               placeholder="you@example.com"
+                               autocomplete="email" />
+                        <span asp-validation-for="Email" class="field-error"></span>
+                    </div>
+
+                    <!-- USERNAME -->
+                    <div class="auth-field">
+                        <label class="auth-label" asp-for="UserName">
+                            <i class="bi bi-person"></i> Username
+                        </label>
+                        <input asp-for="UserName"
+                               class="auth-input"
+                               placeholder="e.g. johndoe"
+                               autocomplete="username" />
+                        <span asp-validation-for="UserName" class="field-error"></span>
+                    </div>
+
+                    <!-- PASSWORD -->
+                    <div class="auth-field">
+                        <label class="auth-label" asp-for="Password">
+                            <i class="bi bi-lock"></i> Password
+                        </label>
+                        <div style="position:relative;">
+                            <input asp-for="Password"
+                                   class="auth-input"
+                                   type="password"
+                                   placeholder="Min. 6 characters"
+                                   id="passwordInput"
+                                   autocomplete="new-password"
+                                   style="padding-right:3rem;" />
+                            <button type="button"
+                                    onclick="togglePassword('passwordInput', 'eyeIcon1')"
+                                    style="position:absolute; right:0.75rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--muted); font-size:1rem;">
+                                <i class="bi bi-eye" id="eyeIcon1"></i>
+                            </button>
+                        </div>
+                        <!-- Strength Bar -->
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="strengthFill"></div>
+                        </div>
+                        <div class="strength-label" id="strengthLabel">Enter a password</div>
+                        <!-- Requirements -->
+                        <div class="requirements">
+                            <div class="req-item" id="req-length">
+                                <i class="bi bi-circle-fill"></i> At least 6 characters
+                            </div>
+                            <div class="req-item" id="req-number">
+                                <i class="bi bi-circle-fill"></i> Contains a number
+                            </div>
+                        </div>
+                        <span asp-validation-for="Password" class="field-error"></span>
+                    </div>
+
+                    <!-- CONFIRM PASSWORD -->
+                    <div class="auth-field">
+                        <label class="auth-label" asp-for="ConfirmPassword">
+                            <i class="bi bi-lock-fill"></i> Confirm password
+                        </label>
+                        <div style="position:relative;">
+                            <input asp-for="ConfirmPassword"
+                                   class="auth-input"
+                                   type="password"
+                                   placeholder="Repeat your password"
+                                   id="confirmInput"
+                                   autocomplete="new-password"
+                                   style="padding-right:3rem;" />
+                            <button type="button"
+                                    onclick="togglePassword('confirmInput', 'eyeIcon2')"
+                                    style="position:absolute; right:0.75rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--muted); font-size:1rem;">
+                                <i class="bi bi-eye" id="eyeIcon2"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="field-error"></span>
+                    </div>
+
+                    <!-- SUBMIT -->
+                    <button type="submit" class="auth-submit">
+                        <i class="bi bi-person-plus"></i> Create Account
+                    </button>
+                </form>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="auth-card-footer">
+                Already have an account?
+                <a asp-controller="Account" asp-action="Login">Sign in here</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'bi bi-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'bi bi-eye';
+            }
+        }
+
+        // Password strength checker
+        const passwordInput = document.getElementById('passwordInput');
+        const strengthFill = document.getElementById('strengthFill');
+        const strengthLabel = document.getElementById('strengthLabel');
+
+        passwordInput.addEventListener('input', () => {
+            const val = passwordInput.value;
+            let score = 0;
+
+            const reqLength = document.getElementById('req-length');
+            const reqNumber = document.getElementById('req-number');
+
+            // Check requirements
+            if (val.length >= 6) { score++; reqLength.classList.add('met'); }
+            else { reqLength.classList.remove('met'); }
+
+            if (/\d/.test(val)) { score++; reqNumber.classList.add('met'); }
+            else { reqNumber.classList.remove('met'); }
+
+            if (val.length >= 10) score++;
+            if (/[A-Z]/.test(val)) score++;
+
+            // Update bar
+            const percent = (score / 4) * 100;
+            strengthFill.style.width = percent + '%';
+
+            if (score <= 1) {
+                strengthFill.style.background = '#dc2626';
+                strengthLabel.textContent = 'Weak password';
+            } else if (score === 2) {
+                strengthFill.style.background = '#d97706';
+                strengthLabel.textContent = 'Fair password';
+            } else if (score === 3) {
+                strengthFill.style.background = '#3b82f6';
+                strengthLabel.textContent = 'Good password';
+            } else {
+                strengthFill.style.background = '#22c55e';
+                strengthLabel.textContent = 'Strong password';
+            }
+        });
+    </script>
+}

@@ -1,0 +1,658 @@
+﻿@model IEnumerable<StradigBlog.Models.Post>
+@{
+    ViewData["Title"] = "My Dashboard";
+}
+
+@section Styles {
+    <style>
+        .dashboard-page {
+            padding: 2.5rem 0 4rem;
+        }
+
+        /* ── WELCOME BANNER ── */
+        .welcome-banner {
+            background: var(--navy);
+            color: var(--cream);
+            padding: 2.5rem 0;
+            margin-bottom: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .welcome-banner::before {
+                content: '';
+                position: absolute;
+                top: -80px;
+                right: -80px;
+                width: 300px;
+                height: 300px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(232,98,42,.15) 0%, transparent 70%);
+                pointer-events: none;
+            }
+
+        .welcome-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-left {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #e8622a, #f4845f);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 4px 16px rgba(232,98,42,.4);
+        }
+
+        .welcome-text h1 {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--cream);
+            margin-bottom: 0.2rem;
+        }
+
+        .welcome-text p {
+            color: rgba(245,240,232,.55);
+            font-size: 0.875rem;
+        }
+
+        /* ── STATS ── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
+        }
+
+        @@media (max-width: 700px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            box-shadow: 0 2px 12px rgba(13,27,42,.05);
+            animation: fadeUp 0.4s ease both;
+        }
+
+            .stat-card:nth-child(1) {
+                animation-delay: 0.05s;
+            }
+
+            .stat-card:nth-child(2) {
+                animation-delay: 0.10s;
+            }
+
+            .stat-card:nth-child(3) {
+                animation-delay: 0.15s;
+            }
+
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            flex-shrink: 0;
+        }
+
+            .stat-icon.orange {
+                background: rgba(232,98,42,.1);
+                color: var(--accent);
+            }
+
+            .stat-icon.blue {
+                background: rgba(59,130,246,.1);
+                color: #3b82f6;
+            }
+
+            .stat-icon.green {
+                background: rgba(34,197,94,.1);
+                color: #22c55e;
+            }
+
+        .stat-info h3 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--navy);
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-info p {
+            font-size: 0.82rem;
+            color: var(--muted);
+        }
+
+        /* ── DASHBOARD LAYOUT ── */
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @@media (max-width: 900px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ── PANEL CARD ── */
+        .panel-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 2px 16px rgba(13,27,42,.05);
+            animation: fadeUp 0.4s ease 0.2s both;
+        }
+
+        .panel-header {
+            background: var(--navy);
+            color: var(--cream);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .panel-header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+            .panel-header-left i {
+                color: var(--accent-light);
+            }
+
+        /* ── POSTS TABLE ── */
+        .dash-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .dash-table thead {
+                background: #fafaf9;
+                border-bottom: 2px solid var(--border);
+            }
+
+                .dash-table thead th {
+                    padding: 0.85rem 1.25rem;
+                    font-size: 0.72rem;
+                    font-weight: 600;
+                    letter-spacing: 0.8px;
+                    text-transform: uppercase;
+                    color: var(--muted);
+                    text-align: left;
+                }
+
+            .dash-table tbody tr {
+                border-bottom: 1px solid var(--border);
+                transition: background 0.15s;
+            }
+
+                .dash-table tbody tr:last-child {
+                    border-bottom: none;
+                }
+
+                .dash-table tbody tr:hover {
+                    background: #faf8f5;
+                }
+
+            .dash-table td {
+                padding: 1rem 1.25rem;
+                vertical-align: middle;
+                font-size: 0.875rem;
+            }
+
+        .td-post-title {
+            font-weight: 600;
+            color: var(--navy);
+            max-width: 260px;
+        }
+
+            .td-post-title a {
+                color: inherit;
+                text-decoration: none;
+                transition: color 0.2s;
+            }
+
+                .td-post-title a:hover {
+                    color: var(--accent);
+                }
+
+        .category-pill {
+            display: inline-block;
+            background: rgba(232,98,42,.1);
+            color: var(--accent);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            padding: 0.25rem 0.7rem;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+
+            .category-pill.none {
+                background: #f3f4f6;
+                color: var(--muted);
+            }
+
+        .td-date {
+            color: var(--muted);
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        .dash-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dash-btn-edit {
+            background: #fefce8;
+            color: #854d0e;
+        }
+
+            .dash-btn-edit:hover {
+                background: #fef08a;
+                color: #854d0e;
+            }
+
+        .dash-btn-delete {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+            .dash-btn-delete:hover {
+                background: #fecaca;
+                color: #991b1b;
+            }
+
+        .dash-btn-view {
+            background: #f0f9ff;
+            color: #0369a1;
+        }
+
+            .dash-btn-view:hover {
+                background: #bae6fd;
+                color: #0369a1;
+            }
+
+        /* ── EMPTY STATE ── */
+        .dash-empty {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--muted);
+        }
+
+            .dash-empty i {
+                font-size: 2.5rem;
+                opacity: 0.2;
+                display: block;
+                margin-bottom: 0.75rem;
+            }
+
+            .dash-empty h4 {
+                font-family: var(--font-display);
+                color: var(--navy);
+                margin-bottom: 0.4rem;
+            }
+
+        /* ── SIDEBAR ── */
+        .sidebar-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 12px rgba(13,27,42,.05);
+            animation: fadeUp 0.4s ease 0.25s both;
+        }
+
+        .sidebar-card-header {
+            background: var(--navy);
+            color: var(--cream);
+            padding: 0.85rem 1.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .sidebar-card-header i {
+                color: var(--accent-light);
+            }
+
+        .sidebar-card-body {
+            padding: 1.25rem;
+        }
+
+        .profile-info-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+
+            .profile-info-row:last-child {
+                border-bottom: none;
+                padding-bottom: 0;
+            }
+
+        .profile-info-label {
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            flex-shrink: 0;
+        }
+
+        .profile-info-value {
+            font-weight: 500;
+            color: var(--navy);
+            text-align: right;
+            word-break: break-all;
+            margin-left: 0.5rem;
+        }
+
+        .sidebar-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+            .sidebar-actions .btn {
+                justify-content: center;
+                width: 100%;
+            }
+
+        /* ── SUCCESS ALERT ── */
+        .alert-success {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 0.85rem 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            animation: fadeUp 0.3s ease both;
+        }
+    </style>
+}
+
+<!-- WELCOME BANNER -->
+<div class="welcome-banner">
+    <div class="container">
+        <div class="welcome-inner">
+            <div class="welcome-left">
+                <div class="avatar">
+                    @(ViewBag.UserName?.ToString().Substring(0, 1).ToUpper() ?? "U")
+                </div>
+                <div class="welcome-text">
+                    <h1>Welcome, @ViewBag.UserName! 👋</h1>
+                    <p>Manage your posts and profile from here.</p>
+                </div>
+            </div>
+            <a asp-controller="Posts" asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> New Post
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container dashboard-page">
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert-success">
+            <i class="bi bi-check-circle-fill"></i>
+            @TempData["Success"]
+        </div>
+    }
+
+    <!-- STATS -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon orange">
+                <i class="bi bi-file-text"></i>
+            </div>
+            <div class="stat-info">
+                <h3>@ViewBag.TotalPosts</h3>
+                <p>My Posts</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon blue">
+                <i class="bi bi-tag"></i>
+            </div>
+            <div class="stat-info">
+                <h3>@ViewBag.TotalCategories</h3>
+                <p>Categories</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green">
+                <i class="bi bi-calendar-check"></i>
+            </div>
+            <div class="stat-info">
+                <h3>
+                    @if (ViewBag.LatestPost != null)
+                    {
+                        @(((StradigBlog.Models.Post)ViewBag.LatestPost).CreatedDate.ToString("MMM dd"))
+                    }
+                    else
+                    {
+                        <span style="font-size:1rem;">None</span>
+                    }
+                </h3>
+                <p>Latest Post</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN LAYOUT -->
+    <div class="dashboard-layout">
+
+        <!-- POSTS PANEL -->
+        <div>
+            <div class="panel-card">
+                <div class="panel-header">
+                    <div class="panel-header-left">
+                        <i class="bi bi-file-text"></i>
+                        My Posts
+                    </div>
+                    <a asp-controller="Posts" asp-action="Create" class="btn btn-primary" style="padding:0.4rem 1rem; font-size:0.78rem;">
+                        <i class="bi bi-plus"></i> New
+                    </a>
+                </div>
+
+                @if (!Model.Any())
+                {
+                    <div class="dash-empty">
+                        <i class="bi bi-journal-x"></i>
+                        <h4>No posts yet</h4>
+                      
+                    </div>
+                }
+                else
+                {
+                    <table class="dash-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Date</th>
+                                <th style="text-align:right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var post in Model)
+                            {
+                                <tr>
+                                    <td class="td-post-title">
+                                        <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.Id">
+                                            @post.Title
+                                        </a>
+                                    </td>
+                                    <td>
+                                        @if (post.Category != null)
+                                        {
+                                            <span class="category-pill">@post.Category.Name</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="category-pill none">None</span>
+                                        }
+                                    </td>
+                                    <td class="td-date">
+                                        @post.CreatedDate.ToString("MMM dd, yyyy")
+                                    </td>
+                                    <td>
+                                        <div style="display:flex; gap:0.4rem; justify-content:flex-end;">
+                                            <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.Id"
+                                               class="dash-action-btn dash-btn-view">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                            <a asp-controller="Posts" asp-action="Edit" asp-route-id="@post.Id"
+                                               class="dash-action-btn dash-btn-edit">
+                                                <i class="bi bi-pencil"></i> Edit
+                                            </a>
+                                            <form asp-action="DeletePost" method="post" style="margin:0;"
+                                                  onsubmit="return confirm('Delete this post?')">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@post.Id" />
+                                                <button type="submit" class="dash-action-btn dash-btn-delete">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <aside>
+
+            <!-- Profile Info -->
+            <div class="sidebar-card">
+                <div class="sidebar-card-header">
+                    <i class="bi bi-person"></i> My Profile
+                </div>
+                <div class="sidebar-card-body">
+                    <div class="profile-info-row">
+                        <span class="profile-info-label">
+                            <i class="bi bi-person-circle"></i> Username
+                        </span>
+                        <span class="profile-info-value">@ViewBag.UserName</span>
+                    </div>
+                    <div class="profile-info-row">
+                        <span class="profile-info-label">
+                            <i class="bi bi-envelope"></i> Email
+                        </span>
+                        <span class="profile-info-value">@ViewBag.UserEmail</span>
+                    </div>
+                    <div class="profile-info-row">
+                        <span class="profile-info-label">
+                            <i class="bi bi-file-text"></i> Posts
+                        </span>
+                        <span class="profile-info-value">@ViewBag.TotalPosts</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="sidebar-card">
+                <div class="sidebar-card-header">
+                    <i class="bi bi-lightning"></i> Quick Actions
+                </div>
+                <div class="sidebar-card-body">
+                    <div class="sidebar-actions">
+                        <a asp-action="EditProfile" class="btn btn-outline">
+                            <i class="bi bi-pencil-square"></i> Edit Profile
+                        </a>
+                        <a asp-controller="Posts" asp-action="Create" class="btn btn-primary">
+                            <i class="bi bi-plus"></i> New Post
+                        </a>
+                        <a asp-controller="Posts" asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-grid"></i> All Posts
+                        </a>
+                        <a asp-controller="Categories" asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-tags"></i> Categories
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </aside>
+    </div>
+</div>

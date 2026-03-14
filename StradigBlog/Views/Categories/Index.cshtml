@@ -1,0 +1,298 @@
+﻿@model IEnumerable<StradigBlog.Models.Category>
+@{
+    ViewData["Title"] = "Categories";
+}
+
+@section Styles {
+    <style>
+        .cat-header {
+            background: var(--navy);
+            color: var(--cream);
+            padding: 3.5rem 0 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .cat-header::before {
+                content: 'TAGS';
+                position: absolute;
+                right: -10px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-family: var(--font-display);
+                font-size: 10rem;
+                font-weight: 900;
+                color: rgba(255,255,255,.04);
+                pointer-events: none;
+                user-select: none;
+            }
+
+            .cat-header h1 {
+                font-family: var(--font-display);
+                font-size: 2.75rem;
+                font-weight: 900;
+                position: relative;
+                z-index: 1;
+            }
+
+            .cat-header p {
+                color: rgba(245,240,232,.55);
+                margin-top: 0.5rem;
+                position: relative;
+                z-index: 1;
+            }
+
+        .cat-header-row {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .count-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(245,240,232,.1);
+            color: rgba(245,240,232,.7);
+            border: 1px solid rgba(245,240,232,.15);
+            padding: 0.3rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* ── GRID ── */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(13,27,42,.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            animation: fadeUp 0.4s ease both;
+        }
+
+            .category-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 30px rgba(13,27,42,.1);
+            }
+
+        @@keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .category-card:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+
+        .category-card:nth-child(2) {
+            animation-delay: 0.10s;
+        }
+
+        .category-card:nth-child(3) {
+            animation-delay: 0.15s;
+        }
+
+        .category-card:nth-child(4) {
+            animation-delay: 0.20s;
+        }
+
+        .category-card-top {
+            background: linear-gradient(135deg, var(--navy) 0%, #1e3a5f 100%);
+            padding: 1.75rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .category-card-top::after {
+                content: '#';
+                position: absolute;
+                right: -10px;
+                bottom: -20px;
+                font-family: var(--font-display);
+                font-size: 7rem;
+                font-weight: 900;
+                color: rgba(255,255,255,.05);
+                line-height: 1;
+                pointer-events: none;
+            }
+
+        .category-name {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--cream);
+            position: relative;
+            z-index: 1;
+        }
+
+        .category-post-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(232,98,42,.2);
+            color: var(--accent-light);
+            border: 1px solid rgba(232,98,42,.3);
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.6rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .category-card-body {
+            padding: 1.25rem 1.5rem;
+        }
+
+        .category-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.4rem 0.9rem;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .action-btn-edit {
+            background: #fefce8;
+            color: #854d0e;
+        }
+
+            .action-btn-edit:hover {
+                background: #fef08a;
+                color: #854d0e;
+            }
+
+        .action-btn-delete {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+            .action-btn-delete:hover {
+                background: #fecaca;
+                color: #991b1b;
+            }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            text-align: center;
+            padding: 5rem 2rem;
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+        }
+
+            .empty-state i {
+                font-size: 3rem;
+                opacity: 0.2;
+                display: block;
+                margin-bottom: 1rem;
+                color: var(--navy);
+            }
+
+            .empty-state h3 {
+                font-family: var(--font-display);
+                font-size: 1.4rem;
+                color: var(--navy);
+                margin-bottom: 0.5rem;
+            }
+
+            .empty-state p {
+                color: var(--muted);
+                margin-bottom: 1.5rem;
+            }
+    </style>
+}
+
+<!-- PAGE HEADER -->
+<div class="cat-header">
+    <div class="container">
+        <div class="cat-header-row">
+            <div>
+                <h1>Categories</h1>
+                <p>Organise your blog posts into topics.</p>
+            </div>
+            <div style="display:flex; align-items:center; gap:1rem; position:relative; z-index:1;">
+                <span class="count-badge">
+                    <i class="bi bi-tag"></i>
+                    @Model.Count() @(Model.Count() == 1 ? "category" : "categories")
+                </span>
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-lg"></i> New Category
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CATEGORIES GRID -->
+<div class="container">
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-tags"></i>
+            <h3>No categories yet</h3>
+            <p>Create your first category to start organising posts.</p>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus"></i> Create Category
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="categories-grid">
+            @foreach (var category in Model)
+            {
+                <div class="category-card">
+                    <div class="category-card-top">
+                        <div class="category-name">@category.Name</div>
+                        <div class="category-post-count">
+                            <i class="bi bi-file-text"></i>
+                            @(category.Posts?.Count ?? 0) @(category.Posts?.Count == 1 ? "post" : "posts")
+                        </div>
+                    </div>
+                    <div class="category-card-body">
+                        <div class="category-actions">
+                            <a asp-action="Edit" asp-route-id="@category.Id" class="action-btn action-btn-edit">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@category.Id" class="action-btn action-btn-delete">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

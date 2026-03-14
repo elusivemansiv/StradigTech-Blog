@@ -1,0 +1,331 @@
+﻿@model StradigBlog.Models.Post
+@{
+    ViewData["Title"] = "Edit Post";
+}
+
+@section Styles {
+    <style>
+        .editor-layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            padding: 2.5rem 0 4rem;
+            align-items: start;
+        }
+
+        @@media (max-width: 900px) {
+            .editor-layout
+
+        {
+            grid-template-columns: 1fr;
+        }
+
+        }
+
+        .editor-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 2px 20px rgba(13,27,42,.06);
+            animation: fadeUp 0.45s ease both;
+        }
+
+        @@keyframes fadeUp {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(16px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .editor-card-header {
+            background: #854d0e;
+            color: #fef9c3;
+            padding: 1.1rem 1.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+        }
+
+            .editor-card-header i {
+                font-size: 1rem;
+            }
+
+        .editor-card-body {
+            padding: 2rem 1.75rem;
+        }
+
+        .title-input {
+            font-family: var(--font-display) !important;
+            font-size: 1.35rem !important;
+            font-weight: 700 !important;
+        }
+
+        .content-textarea {
+            min-height: 320px;
+            line-height: 1.8;
+        }
+
+        .form-divider {
+            border: none;
+            border-top: 1px dashed var(--border);
+            margin: 1.75rem 0;
+        }
+
+        .editor-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .sidebar-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 12px rgba(13,27,42,.05);
+            animation: fadeUp 0.45s ease 0.1s both;
+        }
+
+        .sidebar-card-header {
+            background: var(--navy);
+            color: var(--cream);
+            padding: 0.85rem 1.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .sidebar-card-header i {
+                color: var(--accent-light);
+            }
+
+        .sidebar-card-body {
+            padding: 1.25rem;
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 140px;
+            border-radius: 8px;
+            background: #f3f4f6;
+            border: 2px dashed var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.82rem;
+            color: var(--muted);
+            margin-top: 0.75rem;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+            .image-preview img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 6px;
+            }
+
+            .image-preview.has-image {
+                border-style: solid;
+                border-color: var(--accent);
+            }
+
+        .field-error {
+            font-size: 0.78rem;
+            color: #dc2626;
+            margin-top: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .edit-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+            padding: 0.3rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+    </style>
+}
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <div class="container">
+        <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap; justify-content:space-between;">
+            <div>
+                <h1>
+                    <i class="bi bi-pencil" style="color:var(--accent-light); margin-right:.5rem;"></i>
+                    Edit Post
+                </h1>
+                <p>Update and save changes to your article.</p>
+            </div>
+            <div style="display:flex; gap:.75rem; align-items:center;">
+                <span class="edit-badge">
+                    <i class="bi bi-pencil-square"></i> Editing #@Model.Id
+                </span>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <form asp-action="Edit" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="CreatedDate" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+        <div class="editor-layout">
+
+            <!-- MAIN EDITOR -->
+            <div>
+                <div class="editor-card">
+                    <div class="editor-card-header">
+                        <i class="bi bi-pencil"></i>
+                        Editing: @Model.Title
+                        <span style="margin-left:auto; font-size:0.72rem; opacity:.7;">
+                            Created @Model.CreatedDate.ToString("MMM dd, yyyy")
+                        </span>
+                    </div>
+                    <div class="editor-card-body">
+
+                        <div class="form-group">
+                            <label class="form-label" asp-for="Title">Post Title</label>
+                            <input asp-for="Title" class="form-control title-input" placeholder="Post title..." />
+                            <span asp-validation-for="Title" class="field-error">
+                               
+                            </span>
+                        </div>
+
+                        <hr class="form-divider" />
+
+                        <div class="form-group">
+                            <label class="form-label" asp-for="Content">Content</label>
+                            <textarea asp-for="Content"
+                                      class="form-control content-textarea"
+                                      placeholder="Write your article..."></textarea>
+                            <span asp-validation-for="Content" class="field-error">
+                                
+                            </span>
+                        </div>
+
+                        <div class="editor-footer">
+                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                                <i class="bi bi-eye"></i> View Post
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg"></i> Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIDEBAR -->
+            <aside>
+                <div class="sidebar-card">
+                    <div class="sidebar-card-header">
+                        <i class="bi bi-gear"></i> Settings
+                    </div>
+                    <div class="sidebar-card-body">
+                        <div class="form-group">
+                            <label class="form-label" asp-for="CategoryId">
+                                <i class="bi bi-tag" style="color:var(--accent);"></i> Category
+                            </label>
+                            @{
+                                var categoryList = ViewData["CategoryId"] as Microsoft.AspNetCore.Mvc.Rendering.SelectList;
+                            }
+                            <select asp-for="CategoryId"
+                                    asp-items="categoryList"
+                                    class="form-control">
+                                <option value="">— Select a category —</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="form-label" asp-for="ImagePath">
+                                <i class="bi bi-image" style="color:var(--accent);"></i> Image URL
+                            </label>
+                            <input asp-for="ImagePath"
+                                   class="form-control"
+                                   placeholder="https://example.com/image.jpg"
+                                   id="imageInput" />
+                            <div class="image-preview @(!string.IsNullOrEmpty(Model.ImagePath) ? "has-image" : "")"
+                                 id="imagePreview">
+                                @if (!string.IsNullOrEmpty(Model.ImagePath))
+                                {
+                                    <img src="@Model.ImagePath" alt="Preview" />
+                                }
+                                else
+                                {
+                                    <span><i class="bi bi-image" style="margin-right:.4rem;"></i> Preview</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-card">
+                    <div class="sidebar-card-header">
+                        <i class="bi bi-exclamation-triangle"></i> Danger Zone
+                    </div>
+                    <div class="sidebar-card-body">
+                        <p style="font-size:0.82rem; color:var(--muted); margin-bottom:1rem;">
+                            Permanently delete this post. This action cannot be undone.
+                        </p>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger" style="width:100%; justify-content:center;">
+                            <i class="bi bi-trash"></i> Delete Post
+                        </a>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        imageInput.addEventListener('input', () => {
+            const url = imageInput.value.trim();
+            if (url) {
+                imagePreview.innerHTML = `<img src="${url}" alt="Preview" onerror="this.parentElement.innerHTML='<span style=color:#dc2626>Invalid URL</span>'" />`;
+                imagePreview.classList.add('has-image');
+            } else {
+                imagePreview.innerHTML = '<span><i class="bi bi-image" style="margin-right:.4rem;"></i> Preview</span>';
+                imagePreview.classList.remove('has-image');
+            }
+        });
+    </script>
+}

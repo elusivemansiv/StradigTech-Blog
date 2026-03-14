@@ -1,0 +1,459 @@
+﻿@model IEnumerable<StradigBlog.Models.Post>
+@{
+    ViewData["Title"] = "Home";
+}
+
+@section Styles {
+    <style>
+        /* ── HERO ── */
+        .hero {
+            background: var(--navy);
+            color: var(--cream);
+            padding: 5rem 0 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .hero::before {
+                content: '';
+                position: absolute;
+                top: -100px;
+                right: -100px;
+                width: 500px;
+                height: 500px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(232,98,42,.15) 0%, transparent 70%);
+                pointer-events: none;
+            }
+
+            .hero::after {
+                content: '';
+                position: absolute;
+                bottom: -80px;
+                left: -80px;
+                width: 350px;
+                height: 350px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(232,98,42,.08) 0%, transparent 70%);
+                pointer-events: none;
+            }
+
+        .hero-inner {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(232,98,42,.15);
+            color: var(--accent-light);
+            border: 1px solid rgba(232,98,42,.3);
+            padding: 0.35rem 1rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            margin-bottom: 1.25rem;
+        }
+
+            .hero h1 em {
+                font-style: italic;
+                color: var(--accent);
+            }
+
+        .hero-sub {
+            color: rgba(245,240,232,.6);
+            font-size: 1.1rem;
+            max-width: 520px;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-hero {
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            border-radius: 8px;
+        }
+
+        .btn-ghost {
+            background: rgba(255,255,255,.08);
+            color: var(--cream);
+            border: 1.5px solid rgba(255,255,255,.2);
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            border-radius: 8px;
+        }
+
+            .btn-ghost:hover {
+                background: rgba(255,255,255,.15);
+                color: var(--cream);
+            }
+
+        /* ── STATS BAR ── */
+        .stats-bar {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 0;
+        }
+
+        .stats-inner {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.875rem;
+            color: var(--muted);
+        }
+
+            .stat-item i {
+                color: var(--accent);
+                font-size: 1.1rem;
+            }
+
+            .stat-item strong {
+                color: var(--navy);
+                font-size: 1rem;
+            }
+
+        /* ── SECTION ── */
+        .section {
+            padding: 3.5rem 0;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--navy);
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .section-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: gap 0.2s;
+        }
+
+            .section-link:hover {
+                gap: 0.6rem;
+                color: var(--accent);
+            }
+
+        /* ── POST CARDS ── */
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.75rem;
+        }
+
+        .post-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: transform 0.25s, box-shadow 0.25s;
+            display: flex;
+            flex-direction: column;
+            animation: fadeUp 0.5s ease both;
+        }
+
+            .post-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 12px 40px rgba(13,27,42,.12);
+            }
+
+        @@keyframes fadeUp {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .post-card:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+
+        .post-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .post-card:nth-child(3) {
+            animation-delay: 0.15s;
+        }
+
+        .post-card:nth-child(4) {
+            animation-delay: 0.2s;
+        }
+
+        .post-card:nth-child(5) {
+            animation-delay: 0.25s;
+        }
+
+        .post-card-image {
+            height: 180px;
+            background: linear-gradient(135deg, var(--navy) 0%, #1e3a5f 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .post-card-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .post-card-image-placeholder {
+            opacity: 0.15;
+            font-size: 5rem;
+            font-family: var(--font-display);
+            font-weight: 900;
+            color: white;
+            line-height: 1;
+            user-select: none;
+        }
+
+        .post-card-body {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .post-category-badge {
+            display: inline-block;
+            background: rgba(232,98,42,.1);
+            color: var(--accent);
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 0.25rem 0.7rem;
+            border-radius: 999px;
+            margin-bottom: 0.75rem;
+        }
+
+        .post-card-title {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1.35;
+            margin-bottom: 0.75rem;
+            color: var(--navy);
+        }
+
+        .post-card-excerpt {
+            color: var(--muted);
+            font-size: 0.875rem;
+            line-height: 1.65;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .post-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1.25rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .post-date {
+            font-size: 0.78rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .read-more {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: gap 0.2s;
+        }
+
+            .read-more:hover {
+                gap: 0.5rem;
+                color: var(--accent);
+            }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--muted);
+        }
+
+            .empty-state i {
+                font-size: 3rem;
+                opacity: 0.3;
+                display: block;
+                margin-bottom: 1rem;
+            }
+
+            .empty-state h3 {
+                font-family: var(--font-display);
+                color: var(--navy);
+                margin-bottom: 0.5rem;
+            }
+    </style>
+}
+
+<!-- HERO -->
+<section class="hero">
+    <div class="container hero-inner">
+        <div class="hero-eyebrow">
+            <i class="bi bi-stars"></i> Welcome to StradigBlog
+        </div>
+        <h1>Ideas worth<br><em>reading.</em></h1>
+        <p class="hero-sub">
+            Fresh perspectives, in-depth analysis, and stories that matter —
+            curated for curious minds.
+        </p>
+        <div class="hero-actions">
+            <a asp-controller="Posts" asp-action="Index" class="btn btn-primary btn-hero">
+                Browse All Posts
+            </a>
+            <a asp-controller="Posts" asp-action="Create" class="btn btn-ghost btn-hero">
+                <i class="bi bi-pencil"></i> Write Something
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+    <div class="container">
+        <div class="stats-inner">
+            <div class="stat-item">
+                <i class="bi bi-file-text"></i>
+                <strong>@Model.Count()</strong> recent posts
+            </div>
+            <div class="stat-item">
+                <i class="bi bi-clock"></i>
+                Updated today
+            </div>
+            <div class="stat-item">
+                <i class="bi bi-bookmark"></i>
+                Multiple categories
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- LATEST POSTS -->
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Latest Posts</h2>
+            <a asp-controller="Posts" asp-action="Index" class="section-link">
+                View all <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <i class="bi bi-journal-x"></i>
+                <h3>No posts yet</h3>
+               
+            </div>
+        }
+        else
+        {
+            <div class="posts-grid">
+                @foreach (var post in Model)
+                {
+                    <article class="post-card">
+                        <div class="post-card-image">
+                            @if (!string.IsNullOrEmpty(post.ImagePath))
+                            {
+                                <img src="@post.ImagePath" alt="@post.Title" />
+                            }
+                            else
+                            {
+                                <span class="post-card-image-placeholder">
+                                    @(post.Title?.Length > 0 ? post.Title[0].ToString() : "B")
+                                </span>
+                            }
+                        </div>
+                        <div class="post-card-body">
+                            @if (post.Category != null)
+                            {
+                                <span class="post-category-badge">@post.Category.Name</span>
+                            }
+                            <h3 class="post-card-title">@post.Title</h3>
+                            <p class="post-card-excerpt">
+                                @(post.Content?.Length > 150 ? post.Content.Substring(0, 150) + "…" : post.Content)
+                            </p>
+                            <div class="post-card-footer">
+                                <span class="post-date">
+                                    <i class="bi bi-calendar3"></i>
+                                    @post.CreatedDate.ToString("MMM dd, yyyy")
+                                </span>
+                                <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.Id" class="read-more">
+                                    Read more <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+    </div>
+</section>
