@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StradigBlog.Data;
+using MySqlConnector;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,50 +30,43 @@ foreach (var key in allEnvVars.Keys) {
     }
 }
 
-string? rawUrl = Environment.GetEnvironmentVariable("DATABASE_URL") 
+// 1. Try URL-based connection strings (Priority: Private -> Public -> Default)
+string? rawUrl = Environment.GetEnvironmentVariable("MYSQL_PRIVATE_URL") 
                ?? Environment.GetEnvironmentVariable("MYSQL_URL")
-               ?? Environment.GetEnvironmentVariable("MYSQL_PRIVATE_URL");
+               ?? Environment.GetEnvironmentVariable("DATABASE_URL");
 
-string connectionString = "";
+var builderConn = new MySqlConnectionStringBuilder();
 
-if (!string.IsNullOrWhiteSpace(rawUrl))
+if (!string.IsNullOrWhiteSpace(rawUrl) && (rawUrl.StartsWith("mysql://") || rawUrl.StartsWith("mariadb://")))
 {
-    if (rawUrl.StartsWith("mysql://") || rawUrl.StartsWith("mariadb://"))
+    try
     {
-        try
-        {
-            var uri = new Uri(rawUrl);
-            var userInfo = uri.UserInfo.Split(':');
-            
-            // CRITICAL: Unescape user and password as they are often URL-encoded in Railway URLs
-            var user = userInfo.Length > 0 ? Uri.UnescapeDataString(userInfo[0]) : "";
-            var password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : "";
-            
-            // Strip any query parameters or trailing slashes from the database name
-            var dbName = uri.AbsolutePath.TrimStart('/').Split('?')[0].TrimEnd('/');
-            var port = uri.Port > 0 ? uri.Port : 3306;
+        var uri = new Uri(rawUrl);
+        var userInfo = uri.UserInfo.Split(':');
+        
+        builderConn.Server = uri.Host;
+        builderConn.Port = (uint)(uri.Port > 0 ? uri.Port : 3306);
+        builderConn.UserID = userInfo.Length > 0 ? Uri.UnescapeDataString(userInfo[0]) : "";
+        builderConn.Password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : "";
+        builderConn.Database = uri.AbsolutePath.TrimStart('/').Split('?')[0].TrimEnd('/');
+        
+        // Common Railway settings
+        builderConn.AllowPublicKeyRetrieval = true;
+        builderConn.SslMode = uri.Host.EndsWith(".internal") ? MySqlSslMode.None : MySqlSslMode.Preferred;
 
-            // Railway internal hosts often work better with SslMode=None if not specifically configured
-            string sslMode = uri.Host.EndsWith(".internal") ? "None" : "Preferred";
-
-            connectionString = $"Server={uri.Host};Port={port};Database={dbName};User={user};Password={password};AllowPublicKeyRetrieval=true;SslMode={sslMode};";
-            Console.WriteLine($"[INFO] Parsed connection from URL. Target: {uri.Host}:{port}/{dbName} (SSL: {sslMode})");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[ERROR] Failed to parse connection URL: {ex.Message}");
-        }
+        Console.WriteLine($"[INFO] Parsed connection from URL. Target: {builderConn.Server}:{builderConn.Port}/{builderConn.Database} (SSL: {builderConn.SslMode})");
     }
-    else if (rawUrl.Contains("Server=", StringComparison.OrdinalIgnoreCase))
+    catch (Exception ex)
     {
-        connectionString = rawUrl;
-        Console.WriteLine("[INFO] Using literal connection string from environment.");
+        Console.WriteLine($"[ERROR] Failed to parse connection URL: {ex.Message}");
     }
 }
 
-if (string.IsNullOrEmpty(connectionString))
+string connectionString = builderConn.ConnectionString;
+
+// 2. Fallback to individual variables if URL parsing failed or was empty
+if (string.IsNullOrEmpty(connectionString) || string.IsNullOrEmpty(builderConn.Server))
 {
-    // Try individual Railway variables if URL is missing or failed
     var host = Environment.GetEnvironmentVariable("MYSQLHOST");
     var user = Environment.GetEnvironmentVariable("MYSQLUSER");
     var pass = Environment.GetEnvironmentVariable("MYSQLPASSWORD");
@@ -81,16 +75,28 @@ if (string.IsNullOrEmpty(connectionString))
 
     if (!string.IsNullOrEmpty(host) && !string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(db))
     {
-        connectionString = $"Server={host};Port={port};Database={db};User={user};Password={pass};AllowPublicKeyRetrieval=true;SslMode=Preferred;";
+        var fallbackBuilder = new MySqlConnectionStringBuilder
+        {
+            Server = host,
+            UserID = user,
+            Password = pass,
+            Database = db,
+            Port = uint.Parse(port),
+            AllowPublicKeyRetrieval = true,
+            SslMode = MySqlSslMode.Preferred
+        };
+        connectionString = fallbackBuilder.ConnectionString;
         Console.WriteLine($"[INFO] Formed connection from individual MYSQL variables. Target: {host}:{port}/{db}");
     }
-    else
-    {
-        connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
-        Console.WriteLine(string.IsNullOrEmpty(connectionString) 
-            ? "[WARNING] No database connection found!" 
-            : "[INFO] Using fallback connection string from config.");
-    }
+}
+
+// 3. Last fallback: appsettings.json
+if (string.IsNullOrEmpty(connectionString))
+{
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
+    Console.WriteLine(string.IsNullOrEmpty(connectionString) 
+        ? "[WARNING] No database connection found!" 
+        : "[INFO] Using fallback connection string from config.");
 }
 
 // Register DbContext with MySQL and retry on transient failures
