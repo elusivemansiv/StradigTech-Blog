@@ -10,36 +10,57 @@ builder.Services.AddControllersWithViews();
 // -----------------------------
 // Database connection setup
 // -----------------------------
-Console.WriteLine("[DEBUG] Checking Environment Variables for Database...");
+Console.WriteLine("[DEBUG] --- Environment Diagnostics ---");
+var allEnvVars = Environment.GetEnvironmentVariables();
+Console.WriteLine("[DEBUG] Available Environment Variable Keys:");
+foreach (var key in allEnvVars.Keys) {
+    string keyStr = key?.ToString() ?? "";
+    if (keyStr.Contains("PORT", StringComparison.OrdinalIgnoreCase) || 
+        keyStr.Contains("MYSQL", StringComparison.OrdinalIgnoreCase) || 
+        keyStr.Contains("DATABASE", StringComparison.OrdinalIgnoreCase) || 
+        keyStr.Contains("DB", StringComparison.OrdinalIgnoreCase) ||
+        keyStr.Contains("URL", StringComparison.OrdinalIgnoreCase))
+    {
+        Console.WriteLine($"  -> {keyStr}");
+    }
+}
 
 string? rawUrl = Environment.GetEnvironmentVariable("DATABASE_URL") 
                ?? Environment.GetEnvironmentVariable("MYSQL_URL");
 
-string connectionString;
+string connectionString = "";
 
-if (!string.IsNullOrWhiteSpace(rawUrl) && (rawUrl.StartsWith("mysql://") || rawUrl.StartsWith("mariadb://")))
+if (!string.IsNullOrWhiteSpace(rawUrl))
 {
-    try
+    if (rawUrl.StartsWith("mysql://") || rawUrl.StartsWith("mariadb://"))
     {
-        var uri = new Uri(rawUrl);
-        var userInfo = uri.UserInfo.Split(':');
-        var user = userInfo.Length > 0 ? userInfo[0] : "";
-        var password = userInfo.Length > 1 ? userInfo[1] : "";
-        var dbName = uri.AbsolutePath.TrimStart('/');
-        var port = uri.Port > 0 ? uri.Port : 3306;
+        try
+        {
+            var uri = new Uri(rawUrl);
+            var userInfo = uri.UserInfo.Split(':');
+            var user = userInfo.Length > 0 ? userInfo[0] : "";
+            var password = userInfo.Length > 1 ? userInfo[1] : "";
+            var dbName = uri.AbsolutePath.TrimStart('/');
+            var port = uri.Port > 0 ? uri.Port : 3306;
 
-        connectionString = $"Server={uri.Host};Port={port};Database={dbName};User={user};Password={password};AllowPublicKeyRetrieval=true;SslMode=Preferred;";
-        Console.WriteLine($"[INFO] Parsed connection from URL. Target: {uri.Host}:{port}/{dbName}");
+            connectionString = $"Server={uri.Host};Port={port};Database={dbName};User={user};Password={password};AllowPublicKeyRetrieval=true;SslMode=Preferred;";
+            Console.WriteLine($"[INFO] Parsed connection from URL. Target: {uri.Host}:{port}/{dbName}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERROR] Failed to parse connection URL: {ex.Message}");
+        }
     }
-    catch (Exception ex)
+    else if (rawUrl.Contains("Server=", StringComparison.OrdinalIgnoreCase))
     {
-        Console.WriteLine($"[ERROR] Failed to parse connection URL: {ex.Message}");
-        connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
+        connectionString = rawUrl;
+        Console.WriteLine("[INFO] Using literal connection string from DATABASE_URL/MYSQL_URL.");
     }
 }
-else
+
+if (string.IsNullOrEmpty(connectionString))
 {
-    // Try individual Railway variables if URL is missing
+    // Try individual Railway variables if URL is missing or failed
     var host = Environment.GetEnvironmentVariable("MYSQLHOST");
     var user = Environment.GetEnvironmentVariable("MYSQLUSER");
     var pass = Environment.GetEnvironmentVariable("MYSQLPASSWORD");
@@ -72,6 +93,7 @@ builder.Services.AddDbContext<BlogDbContext>(options =>
         )
     )
 );
+
 
 
 
