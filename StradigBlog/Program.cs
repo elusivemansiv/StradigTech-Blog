@@ -7,9 +7,22 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services
 builder.Services.AddControllersWithViews();
 
-// Read connection string from environment variable (Railway) or appsettings.json
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
+// Read and convert Railway MySQL URL
+var rawConnection = Environment.GetEnvironmentVariable("DATABASE_URL")
     ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Convert mysql:// URL format to standard connection string if needed
+string connectionString;
+if (rawConnection != null && rawConnection.StartsWith("mysql://"))
+{
+    var uri = new Uri(rawConnection);
+    var userInfo = uri.UserInfo.Split(':');
+    connectionString = $"Server={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};User={userInfo[0]};Password={userInfo[1]};AllowPublicKeyRetrieval=true;SslMode=none;";
+}
+else
+{
+    connectionString = rawConnection ?? "";
+}
 
 // Register DbContext with MySQL
 builder.Services.AddDbContext<BlogDbContext>(options =>

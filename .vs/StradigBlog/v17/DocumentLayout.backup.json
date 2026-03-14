@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\DELL\\OneDrive\\Desktop\\Mansib\\Git push Projects\\StradigTech-Blog\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{F971CFA3-F709-4B40-A174-0A7EC41FDD1A}|StradigBlog\\StradigBlog.csproj|c:\\users\\dell\\onedrive\\desktop\\mansib\\git push projects\\stradigtech-blog\\stradigblog\\stradigblog.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{F971CFA3-F709-4B40-A174-0A7EC41FDD1A}|StradigBlog\\StradigBlog.csproj|solutionrelative:stradigblog\\stradigblog.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{F971CFA3-F709-4B40-A174-0A7EC41FDD1A}|StradigBlog\\StradigBlog.csproj|c:\\users\\dell\\onedrive\\desktop\\mansib\\git push projects\\stradigtech-blog\\stradigblog\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F971CFA3-F709-4B40-A174-0A7EC41FDD1A}|StradigBlog\\StradigBlog.csproj|solutionrelative:stradigblog\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -22,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 10,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
@@ -58,7 +62,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
+              "Title": "StradigBlog",
+              "DocumentMoniker": "C:\\Users\\DELL\\OneDrive\\Desktop\\Mansib\\Git push Projects\\StradigTech-Blog\\StradigBlog\\StradigBlog.csproj",
+              "RelativeDocumentMoniker": "StradigBlog\\StradigBlog.csproj",
+              "ToolTip": "C:\\Users\\DELL\\OneDrive\\Desktop\\Mansib\\Git push Projects\\StradigTech-Blog\\StradigBlog\\StradigBlog.csproj",
+              "RelativeToolTip": "StradigBlog\\StradigBlog.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAABkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-03-14T10:33:19.419Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\DELL\\OneDrive\\Desktop\\Mansib\\Git push Projects\\StradigTech-Blog\\StradigBlog\\appsettings.json",
               "RelativeDocumentMoniker": "StradigBlog\\appsettings.json",
@@ -66,12 +83,11 @@
               "RelativeToolTip": "StradigBlog\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-03-14T10:21:44.405Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-14T10:21:44.405Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Dockerfile",
               "DocumentMoniker": "C:\\Users\\DELL\\OneDrive\\Desktop\\Mansib\\Git push Projects\\StradigTech-Blog\\StradigBlog\\Dockerfile",
               "RelativeDocumentMoniker": "StradigBlog\\Dockerfile",
@@ -79,12 +95,11 @@
               "RelativeToolTip": "StradigBlog\\Dockerfile",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2026-03-14T10:21:08.358Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-14T10:21:08.358Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\DELL\\OneDrive\\Desktop\\Mansib\\Git push Projects\\StradigTech-Blog\\StradigBlog\\Program.cs",
               "RelativeDocumentMoniker": "StradigBlog\\Program.cs",
