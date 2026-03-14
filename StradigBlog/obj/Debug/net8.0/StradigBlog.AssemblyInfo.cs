@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StradigBlog")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+393a6a7cc15e088088d27b2d21cbcb536a8792a1")]
 [assembly: System.Reflection.AssemblyProductAttribute("StradigBlog")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StradigBlog")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
