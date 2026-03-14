@@ -10,33 +10,54 @@ builder.Services.AddControllersWithViews();
 // -----------------------------
 // Database connection setup
 // -----------------------------
-var rawConnection = Environment.GetEnvironmentVariable("DATABASE_URL")
-    ?? builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? "";
+Console.WriteLine("[DEBUG] Checking Environment Variables for Database...");
+
+string? rawUrl = Environment.GetEnvironmentVariable("DATABASE_URL") 
+               ?? Environment.GetEnvironmentVariable("MYSQL_URL");
 
 string connectionString;
 
-if (!string.IsNullOrWhiteSpace(rawConnection) && rawConnection.StartsWith("mysql://"))
+if (!string.IsNullOrWhiteSpace(rawUrl) && (rawUrl.StartsWith("mysql://") || rawUrl.StartsWith("mariadb://")))
 {
     try
     {
-        var uri = new Uri(rawConnection);
+        var uri = new Uri(rawUrl);
         var userInfo = uri.UserInfo.Split(':');
+        var user = userInfo.Length > 0 ? userInfo[0] : "";
+        var password = userInfo.Length > 1 ? userInfo[1] : "";
         var dbName = uri.AbsolutePath.TrimStart('/');
         var port = uri.Port > 0 ? uri.Port : 3306;
 
-        connectionString = $"Server={uri.Host};Port={port};Database={dbName};User={userInfo[0]};Password={userInfo[1]};AllowPublicKeyRetrieval=true;SslMode=Preferred;";
-        Console.WriteLine($"[INFO] Connecting to MySQL at {uri.Host}:{port}/{dbName}");
+        connectionString = $"Server={uri.Host};Port={port};Database={dbName};User={user};Password={password};AllowPublicKeyRetrieval=true;SslMode=Preferred;";
+        Console.WriteLine($"[INFO] Parsed connection from URL. Target: {uri.Host}:{port}/{dbName}");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"[ERROR] Failed to parse DATABASE_URL: {ex.Message}");
-        connectionString = rawConnection;
+        Console.WriteLine($"[ERROR] Failed to parse connection URL: {ex.Message}");
+        connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
     }
 }
 else
 {
-    connectionString = rawConnection;
+    // Try individual Railway variables if URL is missing
+    var host = Environment.GetEnvironmentVariable("MYSQLHOST");
+    var user = Environment.GetEnvironmentVariable("MYSQLUSER");
+    var pass = Environment.GetEnvironmentVariable("MYSQLPASSWORD");
+    var db = Environment.GetEnvironmentVariable("MYSQLDATABASE");
+    var port = Environment.GetEnvironmentVariable("MYSQLPORT") ?? "3306";
+
+    if (!string.IsNullOrEmpty(host) && !string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(db))
+    {
+        connectionString = $"Server={host};Port={port};Database={db};User={user};Password={pass};AllowPublicKeyRetrieval=true;SslMode=Preferred;";
+        Console.WriteLine($"[INFO] Formed connection from individual MYSQL variables. Target: {host}:{port}/{db}");
+    }
+    else
+    {
+        connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
+        Console.WriteLine(string.IsNullOrEmpty(connectionString) 
+            ? "[WARNING] No database connection found!" 
+            : "[INFO] Using fallback connection string from config.");
+    }
 }
 
 // Register DbContext with MySQL and retry on transient failures
@@ -51,6 +72,8 @@ builder.Services.AddDbContext<BlogDbContext>(options =>
         )
     )
 );
+
+
 
 // -----------------------------
 // Port Configuration for Railway
