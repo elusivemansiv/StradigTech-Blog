@@ -19,16 +19,27 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<BlogDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    Console.WriteLine($"Original Connection String: {connectionString?.Split('@').LastOrDefault() ?? "NULL"} (redacted)");
+    
+    // Fallback to individual Railway variables if DefaultConnection is not a valid MySQL string
+    var rHost = Environment.GetEnvironmentVariable("MYSQLHOST");
+    var rUser = Environment.GetEnvironmentVariable("MYSQLUSER");
+    var rPass = Environment.GetEnvironmentVariable("MYSQLPASSWORD");
+    var rPort = Environment.GetEnvironmentVariable("MYSQLPORT") ?? "3306";
+    var rDb = Environment.GetEnvironmentVariable("MYSQLDATABASE") ?? "railway";
 
-    if (connectionString != null && connectionString.StartsWith("mysql://"))
+    if (!string.IsNullOrEmpty(rHost) && (string.IsNullOrEmpty(connectionString) || connectionString.Contains("localdb")))
+    {
+        Console.WriteLine("Detected Railway MySQL environment variables. Overriding connection string.");
+        connectionString = $"Server={rHost};Port={rPort};Database={rDb};Uid={rUser};Pwd={rPass};SslMode=None;";
+    }
+    else if (connectionString != null && connectionString.StartsWith("mysql://"))
     {
         try
         {
             var uri = new Uri(connectionString);
             var userInfo = uri.UserInfo.Split(':');
-            var user = userInfo[0];
-            var password = userInfo.Length > 1 ? userInfo[1] : "";
+            var user = Uri.UnescapeDataString(userInfo[0]);
+            var password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : "";
             var host = uri.Host;
             var portStr = uri.Port > 0 ? uri.Port : 3306;
             var database = uri.AbsolutePath.TrimStart('/');
@@ -42,18 +53,15 @@ builder.Services.AddDbContext<BlogDbContext>(options =>
         }
     }
 
-    if (string.IsNullOrEmpty(connectionString) || connectionString.Contains("localdb"))
-    {
-        Console.WriteLine("Warning: No valid production connection string found. Falling back to default or failing.");
-    }
+    Console.WriteLine($"Final Connection String: {connectionString?.Split('@').LastOrDefault() ?? "NULL"} (redacted)");
 
     // Using a fixed version to avoid AutoDetect hanging if DB is not ready
     var serverVersion = new MySqlServerVersion(new Version(8, 0, 0));
     options.UseMySql(connectionString, serverVersion, mysqlOptions => 
     {
         mysqlOptions.EnableRetryOnFailure(
-            maxRetryCount: 5,
-            maxRetryDelay: TimeSpan.FromSeconds(30),
+            maxRetryCount: 10,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
             errorNumbersToAdd: null);
     });
 });
