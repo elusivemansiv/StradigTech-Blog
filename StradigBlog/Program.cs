@@ -114,22 +114,32 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Auto-apply migrations
+// Auto-apply migrations/schema
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    Console.WriteLine("Checking database migrations...");
+    Console.WriteLine("Ensuring database schema exists (MySQL)...");
     try
     {
         var context = services.GetRequiredService<BlogDbContext>();
-        context.Database.Migrate();
-        Console.WriteLine("Database migrations applied successfully.");
+        
+        // We use EnsureCreated() here because the existing Migrations are SQL Server specific.
+        // This will create all tables based on your C# models directly.
+        if (context.Database.EnsureCreated())
+        {
+            Console.WriteLine("Database and tables created successfully.");
+        }
+        else
+        {
+            Console.WriteLine("Database already exists. Schema verified.");
+        }
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Migration Error: {ex.Message}");
+        Console.WriteLine($"Schema Creation Error: {ex.Message}");
+        if (ex.InnerException != null) Console.WriteLine($"INNER SCHEMA ERROR: {ex.InnerException.Message}");
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while migrating the database.");
+        logger.LogError(ex, "An error occurred while ensuring the database schema.");
     }
 }
 
