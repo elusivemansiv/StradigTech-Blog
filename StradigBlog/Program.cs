@@ -29,8 +29,8 @@ builder.Services.AddDbContext<BlogDbContext>(options =>
 
     if (!string.IsNullOrEmpty(rHost) && (string.IsNullOrEmpty(connectionString) || connectionString.Contains("localdb")))
     {
-        Console.WriteLine("Detected Railway MySQL environment variables. Overriding connection string.");
-        connectionString = $"Server={rHost};Port={rPort};Database={rDb};Uid={rUser};Pwd={rPass};SslMode=None;";
+        Console.WriteLine($"Detected Railway MySQL environment variables. Host: {rHost}");
+        connectionString = $"Server={rHost};Port={rPort};Database={rDb};Uid={rUser};Pwd={rPass};SslMode=Preferred;AllowPublicKeyRetrieval=True;";
     }
     else if (connectionString != null && connectionString.StartsWith("mysql://"))
     {
@@ -44,7 +44,22 @@ builder.Services.AddDbContext<BlogDbContext>(options =>
             var portStr = uri.Port > 0 ? uri.Port : 3306;
             var database = uri.AbsolutePath.TrimStart('/');
             
-            connectionString = $"Server={host};Port={portStr};Database={database};Uid={user};Pwd={password};SslMode=None;";
+            // diagnostic ping/connect test
+            try {
+                using var client = new System.Net.Sockets.TcpClient();
+                var result = client.BeginConnect(host, portStr, null, null);
+                var success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(3));
+                if (success) {
+                    Console.WriteLine($"SUCCESS: TCP Connection to {host}:{portStr} was successful.");
+                    client.EndConnect(result);
+                } else {
+                    Console.WriteLine($"FAILURE: TCP Connection to {host}:{portStr} timed out (3s). This suggests a network/host resolution issue.");
+                }
+            } catch (Exception netEx) {
+                Console.WriteLine($"NETWORK ERROR testing {host}: {netEx.Message}");
+            }
+
+            connectionString = $"Server={host};Port={portStr};Database={database};Uid={user};Pwd={password};SslMode=Preferred;AllowPublicKeyRetrieval=True;";
             Console.WriteLine($"Parsed MySQL Connection String: Server={host};Database={database};Port={portStr}");
         }
         catch (Exception ex)
@@ -53,7 +68,7 @@ builder.Services.AddDbContext<BlogDbContext>(options =>
         }
     }
 
-    Console.WriteLine($"Final Connection String: {connectionString?.Split('@').LastOrDefault() ?? "NULL"} (redacted)");
+    Console.WriteLine($"Final Connection String: Server={connectionString?.Split(';').FirstOrDefault(s => s.StartsWith("Server="))?.Split('=').LastOrDefault() ?? "NULL"}; (redacted)");
 
     // Using a fixed version to avoid AutoDetect hanging if DB is not ready
     var serverVersion = new MySqlServerVersion(new Version(8, 0, 0));
