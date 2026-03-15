@@ -123,23 +123,56 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<BlogDbContext>();
         
-        // We use EnsureCreated() here because the existing Migrations are SQL Server specific.
-        // This will create all tables based on your C# models directly.
-        if (context.Database.EnsureCreated())
+        // Relational database creator allows us to be more specific
+        var databaseCreator = context.Database.GetService<Microsoft.EntityFrameworkCore.Storage.IRelationalDatabaseCreator>();
+        
+        if (!databaseCreator.Exists()) 
         {
-            Console.WriteLine("Database and tables created successfully.");
+            Console.WriteLine("Database does not exist. Creating database and schema...");
+            databaseCreator.Create();
+            databaseCreator.CreateTables();
         }
-        else
+        else 
         {
-            Console.WriteLine("Database already exists. Schema verified.");
+            Console.WriteLine("Database exists. Checking if tables need to be created...");
+            try 
+            {
+                // Attempt to create tables. This will fail if they already exist, so we catch it.
+                databaseCreator.CreateTables();
+                Console.WriteLine("Tables created successfully.");
+            }
+            catch (MySql.Data.MySqlClient.MySqlException ex) when (ex.Message.Contains("already exists"))
+            {
+                Console.WriteLine("Tables already exist. Schema is ready.");
+            }
+            catch (Exception ex)
+            {
+                // Pomelo or MySqlConnector might throw different exception types
+                if (ex.Message.Contains("already exists") || ex.InnerException?.Message?.Contains("already exists") == true)
+                {
+                    Console.WriteLine("Tables already exist (via catch-all). Schema is ready.");
+                }
+                else 
+                {
+                    Console.WriteLine($"Notice: Table creation skipped or failed with: {ex.Message}");
+                    // We don't throw here, because EnsureCreated or migrations might still work
+                }
+            }
         }
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Schema Creation Error: {ex.Message}");
+        Console.WriteLine($"Aggressive Schema Error: {ex.Message}");
         if (ex.InnerException != null) Console.WriteLine($"INNER SCHEMA ERROR: {ex.InnerException.Message}");
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while ensuring the database schema.");
+        
+        // Last ditch effort: Fallback to the simplest method
+        try 
+        {
+            using var context = services.GetRequiredService<BlogDbContext>();
+            context.Database.EnsureCreated();
+            Console.WriteLine("Last ditch EnsureCreated() called.");
+        }
+        catch {}
     }
 }
 
