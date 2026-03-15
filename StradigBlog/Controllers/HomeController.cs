@@ -13,12 +13,21 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var posts = await _context.Posts
-            .Include(p => p.Category)
-            .OrderByDescending(p => p.CreatedDate)
-            .Take(5)
-            .ToListAsync();
+        try 
+        {
+            var posts = await _context.Posts
+                .Include(p => p.Category)
+                .OrderByDescending(p => p.CreatedDate)
+                .Take(5)
+                .ToListAsync();
 
-        return View(posts);
+            return View(posts);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"HOME PAGE ERROR: {ex.Message}");
+            if (ex.InnerException != null) Console.WriteLine($"INNER ERROR: {ex.InnerException.Message}");
+            throw; // Re-throw so DeveloperExceptionPage catches it
+        }
     }
 }
