@@ -16,7 +16,25 @@ builder.Services.AddControllersWithViews();
 
 // Register DbContext
 builder.Services.AddDbContext<BlogDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    
+    // Handle MySQL URL if provided (standard in Railway)
+    if (connectionString != null && connectionString.StartsWith("mysql://"))
+    {
+        var uri = new Uri(connectionString);
+        var userInfo = uri.UserInfo.Split(':');
+        var user = userInfo[0];
+        var password = userInfo.Length > 1 ? userInfo[1] : "";
+        var host = uri.Host;
+        var portStr = uri.Port > 0 ? uri.Port : 3306;
+        var database = uri.AbsolutePath.TrimStart('/');
+        
+        connectionString = $"Server={host};Port={portStr};Database={database};Uid={user};Pwd={password};SslMode=None;";
+    }
+
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+});
 
 // Add Identity
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>

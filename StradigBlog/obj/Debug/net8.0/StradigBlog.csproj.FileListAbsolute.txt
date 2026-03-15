@@ -507,3 +507,5 @@ C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\Stradig
 C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\obj\Debug\net8.0\StradigBlog.pdb
 C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\obj\Debug\net8.0\StradigBlog.genruntimeconfig.cache
 C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\obj\Debug\net8.0\ref\StradigBlog.dll
+C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\bin\Debug\net8.0\MySqlConnector.dll
+C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\bin\Debug\net8.0\Pomelo.EntityFrameworkCore.MySql.dll

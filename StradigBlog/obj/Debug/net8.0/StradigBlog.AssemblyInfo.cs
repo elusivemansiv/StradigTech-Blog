@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StradigBlog")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+863953b5f019d53f56e7836dd4d6aae09c0b73cf")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+64c04228753e788de6ec26da70ae1f137b980dc9")]
 [assembly: System.Reflection.AssemblyProductAttribute("StradigBlog")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StradigBlog")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
