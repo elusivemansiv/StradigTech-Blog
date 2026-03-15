@@ -1,7 +1,9 @@
 using Humanizer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage;
 using StradigBlog.Data;
 using StradigBlog.Models;
 
@@ -141,7 +143,7 @@ using (var scope = app.Services.CreateScope())
                 databaseCreator.CreateTables();
                 Console.WriteLine("Tables created successfully.");
             }
-            catch (MySql.Data.MySqlClient.MySqlException ex) when (ex.Message.Contains("already exists"))
+            catch (Exception ex) when (ex.Message.Contains("already exists"))
             {
                 Console.WriteLine("Tables already exist. Schema is ready.");
             }
