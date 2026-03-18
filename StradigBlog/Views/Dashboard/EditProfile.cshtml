@@ -1,4 +1,4 @@
-﻿@model StradigBlog.Models.ViewModels.EditProfileViewModel
+@model StradigBlog.Models.ViewModels.EditProfileViewModel
 @{
     ViewData["Title"] = "Edit Profile";
 }
@@ -110,6 +110,35 @@
             font-size: 0.78rem;
             color: var(--muted);
             margin-top: 0.35rem;
+        }
+
+        @@media (max-width: 600px) {
+            .profile-page {
+                padding: 1.5rem 0 3rem;
+            }
+
+            .profile-wrapper {
+                padding: 0 0.5rem;
+            }
+
+            .profile-card-body {
+                padding: 1.25rem 1rem;
+            }
+
+            .profile-card-header {
+                padding: 1rem 1.25rem;
+            }
+
+            .profile-card-footer {
+                flex-direction: column;
+                gap: 0.6rem;
+                padding: 1rem 1.25rem;
+            }
+
+            .profile-card-footer .btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 }

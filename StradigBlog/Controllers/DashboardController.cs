@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,11 +13,13 @@ namespace StradigBlog.Controllers
     {
         private readonly BlogDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
 
-        public DashboardController(BlogDbContext context, UserManager<IdentityUser> userManager)
+        public DashboardController(BlogDbContext context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             _context = context;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         // GET: Dashboard
@@ -113,6 +115,10 @@ namespace StradigBlog.Controllers
                     return View(model);
                 }
             }
+
+            // Refresh the auth cookie so the updated username/email/security-stamp
+            // takes effect immediately and the user can still log in after changes.
+            await _signInManager.RefreshSignInAsync(user);
 
             TempData["Success"] = "Profile updated successfully!";
             return RedirectToAction(nameof(Index));

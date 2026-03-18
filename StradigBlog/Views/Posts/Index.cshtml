@@ -1,4 +1,4 @@
-﻿@model IEnumerable<StradigBlog.Models.Post>
+@model IEnumerable<StradigBlog.Models.Post>
 @{
     ViewData["Title"] = "All Posts";
     var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
@@ -203,6 +203,25 @@
             padding: .3rem .9rem;
             border-radius: 999px;
             font-size: .8rem;
+        }
+
+        @@media (max-width: 768px) {
+            .posts-header {
+                padding: 2rem 0 1.75rem;
+            }
+
+            .posts-header h1 {
+                font-size: 1.9rem;
+            }
+
+            .posts-table-wrap {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .posts-table {
+                min-width: 560px;
+            }
         }
     </style>
 }

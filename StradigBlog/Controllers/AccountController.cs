@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using StradigBlog.Models.ViewModels;
@@ -37,8 +37,18 @@ namespace StradigBlog.Controllers
 
             if (ModelState.IsValid)
             {
+                // Look up user by email first, then sign in by their stored UserName.
+                // This ensures login works even after a username change in EditProfile.
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid email or password.");
+                    return View(model);
+                }
+
                 var result = await _signInManager.PasswordSignInAsync(
-                    model.Email,
+                    user.UserName!,
                     model.Password,
                     model.RememberMe,
                     lockoutOnFailure: true);
@@ -79,9 +89,11 @@ namespace StradigBlog.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Use the actual username from the form (not the email) so that
+                // the display name is correct and login-by-email still works.
                 var user = new IdentityUser
                 {
-                    UserName = model.Email,
+                    UserName = model.UserName,
                     Email = model.Email
                 };
 

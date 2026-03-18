@@ -1,4 +1,4 @@
-﻿@model StradigBlog.Models.Post
+@model StradigBlog.Models.Post
 @using System.Security.Claims
 
 @{
@@ -218,6 +218,33 @@
                 width: 100%;
                 justify-content: center;
             }
+
+        @@media (max-width: 600px) {
+            .article-hero {
+                padding: 2.5rem 0 2rem;
+            }
+
+            .article-body {
+                padding: 1.5rem 1.25rem;
+            }
+
+            .article-content {
+                font-size: 0.975rem;
+            }
+
+            .article-actions {
+                flex-direction: column;
+            }
+
+            .article-actions .spacer {
+                display: none;
+            }
+
+            .article-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
     </style>
 }
 

@@ -1,16 +1,14 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] — StradigBlog</title>
 
-
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
@@ -26,7 +24,6 @@
             --font-display: 'Inter', sans-serif;
             --font-body: 'Inter', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
-
         }
 
         * {
@@ -48,7 +45,7 @@
             padding: 0 2rem;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -67,6 +64,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            flex-shrink: 0;
         }
 
         .logo-icon {
@@ -122,6 +120,60 @@
                 background: var(--accent-light) !important;
             }
 
+        /* ── HAMBURGER ── */
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0.4rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+            z-index: 1100;
+        }
+
+            .nav-toggle:hover {
+                background: rgba(255,255,255,.1);
+            }
+
+            .nav-toggle span {
+                display: block;
+                width: 24px;
+                height: 2px;
+                background: rgba(245,240,232,.8);
+                border-radius: 2px;
+                transition: all 0.3s ease;
+            }
+
+            .nav-toggle.open span:nth-child(1) {
+                transform: translateY(7px) rotate(45deg);
+            }
+
+            .nav-toggle.open span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .nav-toggle.open span:nth-child(3) {
+                transform: translateY(-7px) rotate(-45deg);
+            }
+
+        /* ── MOBILE OVERLAY ── */
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.4);
+            z-index: 900;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+            .nav-overlay.visible {
+                opacity: 1;
+            }
+
         /* ── MAIN CONTENT ── */
         main {
             min-height: calc(100vh - 128px);
@@ -132,7 +184,7 @@
             background: var(--navy);
             color: rgba(245,240,232,.6);
             text-align: center;
-            padding: 2rem;
+            padding: 2rem 1.5rem;
             font-size: 0.85rem;
         }
 
@@ -161,6 +213,7 @@
             text-decoration: none;
             border: none;
             transition: all 0.2s;
+            white-space: nowrap;
         }
 
         .btn-primary {
@@ -243,19 +296,20 @@
         .page-header {
             background: var(--navy);
             color: var(--cream);
-            padding: 3rem 0;
+            padding: 2.5rem 0;
             margin-bottom: 2.5rem;
         }
 
             .page-header h1 {
                 font-family: var(--font-display);
-                font-size: 2.5rem;
+                font-size: clamp(1.5rem, 4vw, 2.5rem);
                 font-weight: 700;
             }
 
             .page-header p {
                 color: rgba(245,240,232,.6);
                 margin-top: 0.5rem;
+                font-size: clamp(0.85rem, 2vw, 1rem);
             }
 
         /* ── ALERTS ── */
@@ -271,11 +325,106 @@
             color: #991b1b;
             border: 1px solid #fecaca;
         }
+
+        /* ── RESPONSIVE MEDIA QUERIES ── */
+        @media (max-width: 768px) {
+            .site-nav {
+                padding: 0 1rem;
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 64px;
+                left: 0;
+                right: 0;
+                background: var(--navy);
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+                padding: 1rem 0 1.5rem;
+                transform: translateY(-110%);
+                transition: transform 0.3s ease;
+                z-index: 950;
+                box-shadow: 0 8px 24px rgba(0,0,0,.4);
+                border-top: 1px solid rgba(255,255,255,.08);
+            }
+
+                .nav-links.open {
+                    transform: translateY(0);
+                }
+
+                .nav-links li {
+                    width: 100%;
+                }
+
+                .nav-links a {
+                    display: block;
+                    padding: 0.8rem 1.5rem;
+                    border-radius: 0;
+                    font-size: 0.95rem;
+                    border-bottom: 1px solid rgba(255,255,255,.05);
+                }
+
+                .nav-links form {
+                    padding: 0.5rem 1.5rem;
+                    width: 100%;
+                }
+
+                .nav-links form button {
+                    width: 100%;
+                    justify-content: center;
+                    border-radius: 6px;
+                }
+
+                .nav-links .nav-btn {
+                    margin: 0.5rem 1.5rem;
+                    text-align: center;
+                    display: block;
+                    border-radius: 6px !important;
+                }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .page-header {
+                padding: 1.75rem 0;
+                margin-bottom: 1.5rem;
+            }
+
+            .btn {
+                padding: 0.55rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .nav-overlay {
+                display: block;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-brand {
+                font-size: 1.25rem;
+            }
+
+            .logo-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+            }
+        }
     </style>
 
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
+
+    <!-- Mobile overlay backdrop -->
+    <div class="nav-overlay" id="navOverlay" onclick="closeNav()"></div>
 
     <nav class="site-nav">
         <a class="nav-brand" asp-controller="Home" asp-action="Index">
@@ -284,15 +433,22 @@
             </div>
             Stradig<span>Blog</span>
         </a>
-        <ul class="nav-links">
-            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-            <li><a asp-controller="Posts" asp-action="Index">All Posts</a></li>
-          
+
+        <!-- Hamburger button (mobile only) -->
+        <button class="nav-toggle" id="navToggle" onclick="toggleNav()" aria-label="Toggle navigation" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <ul class="nav-links" id="navLinks">
+            <li><a asp-controller="Home" asp-action="Index" onclick="closeNav()">Home</a></li>
+            <li><a asp-controller="Posts" asp-action="Index" onclick="closeNav()">All Posts</a></li>
 
             @if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 <li>
-                    <a asp-controller="Dashboard" asp-action="Index">
+                    <a asp-controller="Dashboard" asp-action="Index" onclick="closeNav()">
                         <i class="bi bi-grid-1x2"></i> Dashboard
                     </a>
                 </li>
@@ -307,14 +463,14 @@
             }
             else
             {
-                <li><a asp-controller="Account" asp-action="Login">Login</a></li>
+                <li><a asp-controller="Account" asp-action="Login" onclick="closeNav()">Login</a></li>
                 <li>
-                    <a asp-controller="Account" asp-action="Register" class="nav-btn btn">
+                    <a asp-controller="Account" asp-action="Register" class="nav-btn btn" onclick="closeNav()">
                         <i class="bi bi-person-plus"></i> Register
                     </a>
                 </li>
             }
-            
+
         </ul>
     </nav>
 
@@ -325,6 +481,40 @@
     <footer class="site-footer">
         <p>&copy; @DateTime.Now.Year <strong>StradigBlog</strong> — Developed By Mansib Ahsan</p>
     </footer>
+
+    <script>
+        function toggleNav() {
+            const toggle = document.getElementById('navToggle');
+            const links = document.getElementById('navLinks');
+            const overlay = document.getElementById('navOverlay');
+            const isOpen = links.classList.contains('open');
+            if (isOpen) {
+                closeNav();
+            } else {
+                toggle.classList.add('open');
+                links.classList.add('open');
+                overlay.classList.add('visible');
+                toggle.setAttribute('aria-expanded', 'true');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeNav() {
+            const toggle = document.getElementById('navToggle');
+            const links = document.getElementById('navLinks');
+            const overlay = document.getElementById('navOverlay');
+            toggle.classList.remove('open');
+            links.classList.remove('open');
+            overlay.classList.remove('visible');
+            toggle.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        }
+
+        // Close nav on resize to desktop
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 768) closeNav();
+        });
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

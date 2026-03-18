@@ -1,4 +1,4 @@
-﻿@model IEnumerable<StradigBlog.Models.Post>
+@model IEnumerable<StradigBlog.Models.Post>
 @{
     ViewData["Title"] = "Home";
 }
@@ -116,8 +116,9 @@
 
         .stats-inner {
             display: flex;
-            gap: 3rem;
+            gap: 2rem;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .stat-item {

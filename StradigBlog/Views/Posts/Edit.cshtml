@@ -1,4 +1,4 @@
-﻿@model StradigBlog.Models.Post
+@model StradigBlog.Models.Post
 @{
     ViewData["Title"] = "Edit Post";
 }
@@ -14,12 +14,24 @@
         }
 
         @@media (max-width: 900px) {
-            .editor-layout
-
-        {
-            grid-template-columns: 1fr;
+            .editor-layout {
+                grid-template-columns: 1fr;
+            }
         }
 
+        @@media (max-width: 600px) {
+            .editor-card-body {
+                padding: 1.25rem 1rem;
+            }
+
+            .editor-footer {
+                flex-direction: column;
+            }
+
+            .editor-footer .btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
 
         .editor-card {
