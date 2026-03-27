@@ -37,34 +37,28 @@ namespace StradigBlog.Controllers
 
             if (ModelState.IsValid)
             {
-                // Look up user by email first, then sign in by their stored UserName.
-                // This ensures login works even after a username change in EditProfile.
                 var user = await _userManager.FindByEmailAsync(model.Email);
-
-                if (user == null)
+                if (user != null)
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid email or password.");
-                    return View(model);
-                }
+                    var result = await _signInManager.PasswordSignInAsync(
+                        user.UserName!,
+                        model.Password,
+                        model.RememberMe,
+                        lockoutOnFailure: true);
 
-                var result = await _signInManager.PasswordSignInAsync(
-                    user.UserName!,
-                    model.Password,
-                    model.RememberMe,
-                    lockoutOnFailure: true);
+                    if (result.Succeeded)
+                    {
+                        if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                            return Redirect(returnUrl);
 
-                if (result.Succeeded)
-                {
-                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                        return Redirect(returnUrl);
+                        return RedirectToAction("Index", "Home");
+                    }
 
-                    return RedirectToAction("Index", "Home");
-                }
-
-                if (result.IsLockedOut)
-                {
-                    ModelState.AddModelError(string.Empty, "Account locked. Try again in 5 minutes.");
-                    return View(model);
+                    if (result.IsLockedOut)
+                    {
+                        ModelState.AddModelError(string.Empty, "Account locked. Try again in 5 minutes.");
+                        return View(model);
+                    }
                 }
 
                 ModelState.AddModelError(string.Empty, "Invalid email or password.");
@@ -89,8 +83,6 @@ namespace StradigBlog.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Use the actual username from the form (not the email) so that
-                // the display name is correct and login-by-email still works.
                 var user = new IdentityUser
                 {
                     UserName = model.UserName,

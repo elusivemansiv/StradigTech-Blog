@@ -1,0 +1,117 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\DELL\\OneDrive\\Desktop\\Mansib\\Git push Projects\\StradigTech-Blog\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{F971CFA3-F709-4B40-A174-0A7EC41FDD1A}|StradigBlog\\StradigBlog.csproj|c:\\users\\dell\\onedrive\\desktop\\mansib\\git push projects\\stradigtech-blog\\stradigblog\\controllers\\postscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F971CFA3-F709-4B40-A174-0A7EC41FDD1A}|StradigBlog\\StradigBlog.csproj|solutionrelative:stradigblog\\controllers\\postscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F971CFA3-F709-4B40-A174-0A7EC41FDD1A}|StradigBlog\\StradigBlog.csproj|c:\\users\\dell\\onedrive\\desktop\\mansib\\git push projects\\stradigtech-blog\\stradigblog\\models\\post.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F971CFA3-F709-4B40-A174-0A7EC41FDD1A}|StradigBlog\\StradigBlog.csproj|solutionrelative:stradigblog\\models\\post.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F971CFA3-F709-4B40-A174-0A7EC41FDD1A}|StradigBlog\\StradigBlog.csproj|c:\\users\\dell\\onedrive\\desktop\\mansib\\git push projects\\stradigtech-blog\\stradigblog\\views\\posts\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F971CFA3-F709-4B40-A174-0A7EC41FDD1A}|StradigBlog\\StradigBlog.csproj|solutionrelative:stradigblog\\views\\posts\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F971CFA3-F709-4B40-A174-0A7EC41FDD1A}|StradigBlog\\StradigBlog.csproj|c:\\users\\dell\\onedrive\\desktop\\mansib\\git push projects\\stradigtech-blog\\stradigblog\\models\\viewmodels\\accountviewmodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F971CFA3-F709-4B40-A174-0A7EC41FDD1A}|StradigBlog\\StradigBlog.csproj|solutionrelative:stradigblog\\models\\viewmodels\\accountviewmodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 314,
+          "SelectedChildIndex": 8,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{56df62a4-05a3-4e5b-aa1a-99371ccfb997}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "PostsController.cs",
+              "DocumentMoniker": "C:\\Users\\DELL\\OneDrive\\Desktop\\Mansib\\Git push Projects\\StradigTech-Blog\\StradigBlog\\Controllers\\PostsController.cs",
+              "RelativeDocumentMoniker": "StradigBlog\\Controllers\\PostsController.cs",
+              "ToolTip": "C:\\Users\\DELL\\OneDrive\\Desktop\\Mansib\\Git push Projects\\StradigTech-Blog\\StradigBlog\\Controllers\\PostsController.cs",
+              "RelativeToolTip": "StradigBlog\\Controllers\\PostsController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T10:01:05.764Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AccountViewModels.cs",
+              "DocumentMoniker": "C:\\Users\\DELL\\OneDrive\\Desktop\\Mansib\\Git push Projects\\StradigTech-Blog\\StradigBlog\\Models\\ViewModels\\AccountViewModels.cs",
+              "RelativeDocumentMoniker": "StradigBlog\\Models\\ViewModels\\AccountViewModels.cs",
+              "ToolTip": "C:\\Users\\DELL\\OneDrive\\Desktop\\Mansib\\Git push Projects\\StradigTech-Blog\\StradigBlog\\Models\\ViewModels\\AccountViewModels.cs",
+              "RelativeToolTip": "StradigBlog\\Models\\ViewModels\\AccountViewModels.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T09:48:14.189Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\DELL\\OneDrive\\Desktop\\Mansib\\Git push Projects\\StradigTech-Blog\\StradigBlog\\Views\\Posts\\Details.cshtml",
+              "RelativeDocumentMoniker": "StradigBlog\\Views\\Posts\\Details.cshtml",
+              "ToolTip": "C:\\Users\\DELL\\OneDrive\\Desktop\\Mansib\\Git push Projects\\StradigTech-Blog\\StradigBlog\\Views\\Posts\\Details.cshtml",
+              "RelativeToolTip": "StradigBlog\\Views\\Posts\\Details.cshtml",
+              "ViewState": "AgIAADUBAAAAAAAAAADwv00BAABJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-14T09:45:08.096Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Post.cs",
+              "DocumentMoniker": "C:\\Users\\DELL\\OneDrive\\Desktop\\Mansib\\Git push Projects\\StradigTech-Blog\\StradigBlog\\Models\\Post.cs",
+              "RelativeDocumentMoniker": "StradigBlog\\Models\\Post.cs",
+              "ToolTip": "C:\\Users\\DELL\\OneDrive\\Desktop\\Mansib\\Git push Projects\\StradigTech-Blog\\StradigBlog\\Models\\Post.cs",
+              "RelativeToolTip": "StradigBlog\\Models\\Post.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T04:44:53.61Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

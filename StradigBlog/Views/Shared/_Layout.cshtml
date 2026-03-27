@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] — StradigBlog</title>
 
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
@@ -24,6 +26,7 @@
             --font-display: 'Inter', sans-serif;
             --font-body: 'Inter', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
+
         }
 
         * {
@@ -41,37 +44,53 @@
 
         /* ── NAVBAR ── */
         .site-nav {
-            background: var(--navy);
-            padding: 0 2rem;
+            background: rgba(13, 27, 42, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
             z-index: 1000;
+            height: 72px;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-container {
+            width: 100%;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 64px;
-            box-shadow: 0 2px 20px rgba(0,0,0,.3);
         }
 
         /* ── LOGO ── */
         .nav-brand {
             font-family: var(--font-display);
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 900;
             color: white;
             text-decoration: none;
             letter-spacing: -0.5px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            flex-shrink: 0;
+            gap: 12px;
+            z-index: 1001;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-brand:hover {
+            transform: scale(1.02);
         }
 
         .logo-icon {
             width: 38px;
             height: 38px;
             background: linear-gradient(135deg, #e8622a, #f4845f);
-            border-radius: 10px;
+            border-radius: 11px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -79,7 +98,7 @@
             color: white;
             transform: rotate(-5deg);
             flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(232,98,42,.4);
+            box-shadow: 0 4px 15px rgba(232,98,42,0.4);
         }
 
         .nav-brand span {
@@ -89,94 +108,125 @@
         /* ── NAV LINKS ── */
         .nav-links {
             display: flex;
-            gap: 0.25rem;
+            gap: 0.75rem;
             list-style: none;
             align-items: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-            .nav-links a {
-                color: rgba(245,240,232,.7);
-                text-decoration: none;
-                font-size: 0.875rem;
-                font-weight: 500;
-                padding: 0.5rem 1rem;
-                border-radius: 6px;
-                transition: all 0.2s;
-                letter-spacing: 0.3px;
-            }
+        .nav-links li {
+            position: relative;
+        }
 
-                .nav-links a:hover, .nav-links a.active {
-                    color: var(--cream);
-                    background: rgba(255,255,255,.1);
-                }
+        .nav-links a {
+            color: rgba(245,240,232,0.8);
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 500;
+            padding: 0.6rem 1.1rem;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--cream);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .nav-links a.active {
+            color: white;
+            background: rgba(255,255,255,0.12);
+        }
 
         .nav-btn {
             background: var(--accent) !important;
             color: white !important;
-            border-radius: 6px !important;
+            border-radius: 10px !important;
+            box-shadow: 0 4px 15px rgba(232,98,42,0.25);
         }
 
-            .nav-btn:hover {
-                background: var(--accent-light) !important;
-            }
+        .nav-btn:hover {
+            background: var(--accent-light) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(232,98,42,0.35);
+        }
 
-        /* ── HAMBURGER ── */
+        /* ── MOBILE TOGGLE ── */
         .nav-toggle {
             display: none;
-            flex-direction: column;
-            gap: 5px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1.5rem;
             cursor: pointer;
-            background: none;
-            border: none;
-            padding: 0.4rem;
-            border-radius: 6px;
-            transition: background 0.2s;
-            z-index: 1100;
+            z-index: 1001;
+            padding: 0.5rem;
+            border-radius: 10px;
+            transition: all 0.2s;
         }
 
-            .nav-toggle:hover {
-                background: rgba(255,255,255,.1);
+        .nav-toggle:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        @@media (max-width: 991px) {
+            .nav-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
-            .nav-toggle span {
-                display: block;
-                width: 24px;
-                height: 2px;
-                background: rgba(245,240,232,.8);
-                border-radius: 2px;
-                transition: all 0.3s ease;
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 300px;
+                height: 100vh;
+                background: var(--navy);
+                flex-direction: column;
+                align-items: stretch;
+                padding: 100px 1.5rem 2rem;
+                gap: 0.75rem;
+                box-shadow: -10px 0 40px rgba(0,0,0,0.4);
+                z-index: 1000;
             }
 
-            .nav-toggle.open span:nth-child(1) {
-                transform: translateY(7px) rotate(45deg);
+            .nav-links.active {
+                right: 0;
             }
 
-            .nav-toggle.open span:nth-child(2) {
+            .nav-links a {
+                padding: 1rem 1.25rem;
+                font-size: 1.1rem;
+                background: rgba(255,255,255,0.03);
+            }
+
+            .nav-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.6);
+                backdrop-filter: blur(5px);
+                z-index: 999;
+                display: none;
                 opacity: 0;
+                transition: opacity 0.3s;
             }
 
-            .nav-toggle.open span:nth-child(3) {
-                transform: translateY(-7px) rotate(-45deg);
-            }
-
-        /* ── MOBILE OVERLAY ── */
-        .nav-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,.4);
-            z-index: 900;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-            .nav-overlay.visible {
+            .nav-overlay.active {
+                display: block;
                 opacity: 1;
             }
+        }
 
         /* ── MAIN CONTENT ── */
         main {
-            min-height: calc(100vh - 128px);
+            min-height: calc(100vh - 134px);
         }
 
         /* ── FOOTER ── */
@@ -184,14 +234,16 @@
             background: var(--navy);
             color: rgba(245,240,232,.6);
             text-align: center;
-            padding: 2rem 1.5rem;
+            padding: 2.5rem 1.5rem;
             font-size: 0.85rem;
+            border-top: 1px solid rgba(255,255,255,.05);
         }
 
-            .site-footer a {
-                color: var(--accent);
-                text-decoration: none;
-            }
+        .site-footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
 
         /* ── UTILITY ── */
         .container {
@@ -213,7 +265,6 @@
             text-decoration: none;
             border: none;
             transition: all 0.2s;
-            white-space: nowrap;
         }
 
         .btn-primary {
@@ -296,20 +347,19 @@
         .page-header {
             background: var(--navy);
             color: var(--cream);
-            padding: 2.5rem 0;
+            padding: 3rem 0;
             margin-bottom: 2.5rem;
         }
 
             .page-header h1 {
                 font-family: var(--font-display);
-                font-size: clamp(1.5rem, 4vw, 2.5rem);
+                font-size: 2.5rem;
                 font-weight: 700;
             }
 
             .page-header p {
                 color: rgba(245,240,232,.6);
                 margin-top: 0.5rem;
-                font-size: clamp(0.85rem, 2vw, 1rem);
             }
 
         /* ── ALERTS ── */
@@ -325,153 +375,69 @@
             color: #991b1b;
             border: 1px solid #fecaca;
         }
-
-        /* ── RESPONSIVE MEDIA QUERIES ── */
-        @media (max-width: 768px) {
-            .site-nav {
-                padding: 0 1rem;
-            }
-
-            .nav-toggle {
-                display: flex;
-            }
-
-            .nav-links {
-                position: fixed;
-                top: 64px;
-                left: 0;
-                right: 0;
-                background: var(--navy);
-                flex-direction: column;
-                align-items: stretch;
-                gap: 0;
-                padding: 1rem 0 1.5rem;
-                transform: translateY(-110%);
-                transition: transform 0.3s ease;
-                z-index: 950;
-                box-shadow: 0 8px 24px rgba(0,0,0,.4);
-                border-top: 1px solid rgba(255,255,255,.08);
-            }
-
-                .nav-links.open {
-                    transform: translateY(0);
-                }
-
-                .nav-links li {
-                    width: 100%;
-                }
-
-                .nav-links a {
-                    display: block;
-                    padding: 0.8rem 1.5rem;
-                    border-radius: 0;
-                    font-size: 0.95rem;
-                    border-bottom: 1px solid rgba(255,255,255,.05);
-                }
-
-                .nav-links form {
-                    padding: 0.5rem 1.5rem;
-                    width: 100%;
-                }
-
-                .nav-links form button {
-                    width: 100%;
-                    justify-content: center;
-                    border-radius: 6px;
-                }
-
-                .nav-links .nav-btn {
-                    margin: 0.5rem 1.5rem;
-                    text-align: center;
-                    display: block;
-                    border-radius: 6px !important;
-                }
-
-            .container {
-                padding: 0 1rem;
-            }
-
-            .page-header {
-                padding: 1.75rem 0;
-                margin-bottom: 1.5rem;
-            }
-
-            .btn {
-                padding: 0.55rem 1rem;
-                font-size: 0.85rem;
-            }
-
-            .nav-overlay {
-                display: block;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .nav-brand {
-                font-size: 1.25rem;
-            }
-
-            .logo-icon {
-                width: 32px;
-                height: 32px;
-                font-size: 0.9rem;
-            }
-        }
     </style>
 
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
 
-    <!-- Mobile overlay backdrop -->
-    <div class="nav-overlay" id="navOverlay" onclick="closeNav()"></div>
-
     <nav class="site-nav">
-        <a class="nav-brand" asp-controller="Home" asp-action="Index">
-            <div class="logo-icon">
-                <i class="fas fa-bolt"></i>
-            </div>
-            Stradig<span>Blog</span>
-        </a>
+        <div class="nav-overlay" id="navOverlay"></div>
+        <div class="nav-container">
+            <a class="nav-brand" asp-controller="Home" asp-action="Index">
+                <div class="logo-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                Stradig<span>Blog</span>
+            </a>
 
-        <!-- Hamburger button (mobile only) -->
-        <button class="nav-toggle" id="navToggle" onclick="toggleNav()" aria-label="Toggle navigation" aria-expanded="false">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle Navigation">
+                <i class="bi bi-list"></i>
+            </button>
 
-        <ul class="nav-links" id="navLinks">
-            <li><a asp-controller="Home" asp-action="Index" onclick="closeNav()">Home</a></li>
-            <li><a asp-controller="Posts" asp-action="Index" onclick="closeNav()">All Posts</a></li>
-
-            @if (User.Identity != null && User.Identity.IsAuthenticated)
-            {
+            <ul class="nav-links" id="navLinks">
                 <li>
-                    <a asp-controller="Dashboard" asp-action="Index" onclick="closeNav()">
-                        <i class="bi bi-grid-1x2"></i> Dashboard
+                    <a asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-house-door"></i> Home
                     </a>
                 </li>
                 <li>
-                    <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn" style="background:rgba(255,255,255,.08); color:rgba(245,240,232,.7); border:1px solid rgba(255,255,255,.15); padding:0.45rem 1rem; font-size:0.875rem;">
+                    <a asp-controller="Posts" asp-action="Index">
+                        <i class="bi bi-journal-text"></i> All Posts
+                    </a>
+                </li>
+
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <li>
+                        <a asp-controller="Dashboard" asp-action="Index">
+                            <i class="bi bi-grid-1x2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" style="display:none;">
+                            @Html.AntiForgeryToken()
+                        </form>
+                        <a href="javascript:document.getElementById('logoutForm').submit()" class="btn" style="background:rgba(255,255,255,0.08); color:rgba(245,240,232,0.8); border:1px solid rgba(255,255,255,0.1); padding:0.6rem 1.1rem; border-radius:10px; font-size: 0.92rem;">
                             <i class="bi bi-box-arrow-right"></i> Logout
-                        </button>
-                    </form>
-                </li>
-            }
-            else
-            {
-                <li><a asp-controller="Account" asp-action="Login" onclick="closeNav()">Login</a></li>
-                <li>
-                    <a asp-controller="Account" asp-action="Register" class="nav-btn btn" onclick="closeNav()">
-                        <i class="bi bi-person-plus"></i> Register
-                    </a>
-                </li>
-            }
-
-        </ul>
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        <a asp-controller="Account" asp-action="Login">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Account" asp-action="Register" class="nav-btn btn">
+                            <i class="bi bi-person-plus"></i> Register
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
     </nav>
 
     <main>
@@ -479,41 +445,32 @@
     </main>
 
     <footer class="site-footer">
-        <p>&copy; @DateTime.Now.Year <strong>StradigBlog</strong> — Developed By Mansib Ahsan</p>
+        <p>&copy; @DateTime.Now.Year <strong>StradigBlog</strong> — Developed By <a href="#">Mansib Ahsan</a></p>
     </footer>
 
     <script>
-        function toggleNav() {
-            const toggle = document.getElementById('navToggle');
-            const links = document.getElementById('navLinks');
-            const overlay = document.getElementById('navOverlay');
-            const isOpen = links.classList.contains('open');
-            if (isOpen) {
-                closeNav();
-            } else {
-                toggle.classList.add('open');
-                links.classList.add('open');
-                overlay.classList.add('visible');
-                toggle.setAttribute('aria-expanded', 'true');
-                document.body.style.overflow = 'hidden';
-            }
-        }
+        const navToggle = document.getElementById('navToggle');
+        const navLinks = document.getElementById('navLinks');
+        const navOverlay = document.getElementById('navOverlay');
 
-        function closeNav() {
-            const toggle = document.getElementById('navToggle');
-            const links = document.getElementById('navLinks');
-            const overlay = document.getElementById('navOverlay');
-            toggle.classList.remove('open');
-            links.classList.remove('open');
-            overlay.classList.remove('visible');
-            toggle.setAttribute('aria-expanded', 'false');
-            document.body.style.overflow = '';
-        }
+        if (navToggle && navLinks && navOverlay) {
+            navToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                navOverlay.classList.toggle('active');
+                const icon = navToggle.querySelector('i');
+                if (navLinks.classList.contains('active')) {
+                    icon.classList.replace('bi-list', 'bi-x-lg');
+                } else {
+                    icon.classList.replace('bi-x-lg', 'bi-list');
+                }
+            });
 
-        // Close nav on resize to desktop
-        window.addEventListener('resize', function () {
-            if (window.innerWidth > 768) closeNav();
-        });
+            navOverlay.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                navOverlay.classList.remove('active');
+                navToggle.querySelector('i').classList.replace('bi-x-lg', 'bi-list');
+            });
+        }
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)

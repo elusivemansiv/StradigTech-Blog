@@ -254,9 +254,9 @@ C:\Users\DELL\OneDrive\Desktop\Mansib\.Net Web Project\StradigBlog\StradigBlog\b
 C:\Users\DELL\OneDrive\Desktop\Mansib\.Net Web Project\StradigBlog\StradigBlog\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\bin\Debug\net8.0\appsettings.json
-C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\bin\Debug\net8.0\StradigBlog.staticwebassets.endpoints.json
 C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\bin\Debug\net8.0\appsettings.Production.json
 C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\bin\Debug\net8.0\StradigBlog.staticwebassets.runtime.json
+C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\bin\Debug\net8.0\StradigBlog.staticwebassets.endpoints.json
 C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\bin\Debug\net8.0\StradigBlog.exe
 C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\bin\Debug\net8.0\StradigBlog.deps.json
 C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\bin\Debug\net8.0\StradigBlog.runtimeconfig.json
@@ -501,11 +501,10 @@ C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\Stradig
 C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\obj\Debug\net8.0\StradigB.8F69A143.Up2Date
 C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\obj\Debug\net8.0\StradigBlog.dll
 C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\obj\Debug\net8.0\refint\StradigBlog.dll
 C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\obj\Debug\net8.0\StradigBlog.pdb
 C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\obj\Debug\net8.0\StradigBlog.genruntimeconfig.cache
 C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\obj\Debug\net8.0\ref\StradigBlog.dll
-C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\bin\Debug\net8.0\MySqlConnector.dll
-C:\Users\DELL\OneDrive\Desktop\Mansib\Git push Projects\StradigTech-Blog\StradigBlog\bin\Debug\net8.0\Pomelo.EntityFrameworkCore.MySql.dll

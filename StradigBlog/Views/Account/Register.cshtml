@@ -1,4 +1,4 @@
-﻿@model StradigBlog.Models.ViewModels.RegisterViewModel
+@model StradigBlog.Models.ViewModels.RegisterViewModel
 @{
     ViewData["Title"] = "Register";
     Layout = "_Layout";
@@ -7,12 +7,22 @@
 @section Styles {
     <style>
         .auth-page {
-            min-height: calc(100vh - 128px);
+            min-height: calc(100vh - 134px);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 3rem 1.5rem;
+            padding: 2rem 1.25rem;
             background: var(--cream);
+        }
+
+        @@media (max-width: 480px) {
+            .auth-card-top {
+                padding: 2.25rem 1.5rem 1.75rem;
+            }
+
+            .auth-card-body {
+                padding: 1.5rem;
+            }
         }
 
         .auth-wrapper {
